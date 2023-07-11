@@ -1,0 +1,20 @@
+name = "ConfocalTrackerControl"
+uuid = "ae5e831e-e59e-4d12-a485-b14ccb711986"
+authors = ["urlicht <jungsu93@gmail.com>"]
+version = "0.1.0"
+
+[deps]
+CxxWrap = "1f15a43c-97ca-5a2a-ae31-89f07a497df4"
+DataStructures = "864edb3b-99cc-5e75-8d2d-829cb0a9cfe8"
+Dates = "ade2ca70-3891-5945-98fb-dc099432e06a"
+HDF5 = "f67ccb44-e63f-5c2f-98bd-6dc0ccc4ba2f"
+LibSerialPort = "a05a14c7-6e3b-5ba9-90a2-45558833e1df"
+LinearAlgebra = "37e2e46d-f89d-539d-b4ee-838fcccc9c8e"
+NIDAQ = "66b72792-1abf-55ab-8064-6e9051317175"
+ProgressMeter = "92933f4c-e287-5a05-a399-4b506db050ca"
+PyCall = "438e738f-606a-5dbb-bf0a-cddfbfd45ab0"
+QML = "2db162a6-7e43-52c3-8d84-290c1c42d82a"
+Qt5QuickControls2_jll = "bf3ac11c-603e-589e-b4b7-e696ac65aa4a"
+Spinnaker = "8e0d2ad3-56b8-53f3-8036-54b674872bef"
+StageControl = "789019e4-3a77-4a66-ba07-d181a79193c0"
+Statistics = "10745b16-79ce-11e8-11f9-7d13ad32a3b2"
