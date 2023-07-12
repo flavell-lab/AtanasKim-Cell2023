@@ -1,0 +1,4 @@
+name = "SegmentationStats"
+uuid = "650ea192-4e43-48fd-8a92-7efcafd8e84a"
+authors = ["Jungsoo Kim <jungsu93@gmail.com>"]
+version = "0.1.0"

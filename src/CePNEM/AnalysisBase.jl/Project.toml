@@ -1,0 +1,10 @@
+name = "AnalysisBase"
+uuid = "efe86730-31dd-460e-8d73-167298a07af3"
+authors = ["goldenratio1618 <adamatanas@gmail.com>"]
+version = "0.1.0"
+
+[deps]
+GLMNet = "8d5ece8b-de18-5317-b113-243142960cc6"
+InformationMeasures = "96684042-fbdc-5399-9b8e-d34e539a126c"
+Statistics = "10745b16-79ce-11e8-11f9-7d13ad32a3b2"
+StatsBase = "2913bbd2-ae8a-5f71-8c99-4fb6c76f3a91"

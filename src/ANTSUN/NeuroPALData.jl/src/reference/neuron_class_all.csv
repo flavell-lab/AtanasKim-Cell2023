@@ -1,0 +1,454 @@
+neuron,neuron class,DV,LR,cell type,cell category,"notes, sensilla, modality"
+HSNL,HSN,missing,L,interneuron,,
+HSNR,HSN,missing,R,interneuron,,
+ASJL,ASJ,missing,L,sensory,SN6,amphid
+ASJR,ASJ,missing,R,sensory,SN6,amphid
+ASKL,ASK,missing,L,sensory,SN6,amphid
+ASKR,ASK,missing,R,sensory,SN6,amphid
+ASGL,ASG,missing,L,sensory,SN6,amphid
+ASGR,ASG,missing,R,sensory,SN6,amphid
+ASIL,ASI,missing,L,sensory,SN6,amphid
+ASIR,ASI,missing,R,sensory,SN6,amphid
+AFDL,AFD,missing,L,sensory,SN6,amphid
+AFDR,AFD,missing,R,sensory,SN6,amphid
+AWAL,AWA,missing,L,sensory,SN6,amphid
+AWAR,AWA,missing,R,sensory,SN6,amphid
+AWBL,AWB,missing,L,sensory,SN6,amphid
+AWBR,AWB,missing,R,sensory,SN6,amphid
+AWCL,AWC,missing,L,sensory,SN6,amphid
+AWCR,AWC,missing,R,sensory,SN6,amphid
+ASEL,ASE,missing,L,sensory,SN6,amphid
+ASER,ASE,missing,R,sensory,SN6,amphid
+ADFL,ADF,missing,L,sensory,SN6,amphid
+ADFR,ADF,missing,R,sensory,SN6,amphid
+ASHL,ASH,missing,L,sensory,SN5,"amphid, nociceptive"
+ASHR,ASH,missing,R,sensory,SN5,"amphid, nociceptive"
+ADLL,ADL,missing,L,sensory,SN5,"amphid, nociceptive"
+ADLR,ADL,missing,R,sensory,SN5,"amphid, nociceptive"
+BAGL,BAG,missing,L,sensory,SN4,"O2, CO2, social signals, touch"
+BAGR,BAG,missing,R,sensory,SN4,"O2, CO2, social signals, touch"
+URXL,URX,missing,L,sensory,SN4,"O2, CO2, social signals, touch"
+URXR,URX,missing,R,sensory,SN4,"O2, CO2, social signals, touch"
+ALNL,ALN,missing,L,sensory,SN4,touch
+ALNR,ALN,missing,R,sensory,SN4,touch
+PLNL,PLN,missing,L,sensory,SN4,touch
+PLNR,PLN,missing,R,sensory,SN4,touch
+SDQL,SDQ,missing,L,sensory,SN4,touch
+SDQR,SDQ,missing,R,sensory,SN4,touch
+AQR,AQR,missing,missing,sensory,SN4,touch
+PQR,PQR,missing,missing,sensory,SN4,touch
+ADEL,ADE,missing,L,sensory,SN3,mechanosensory
+ADER,ADE,missing,R,sensory,SN3,mechanosensory
+PDEL,PDE,missing,L,sensory,SN3,mechanosensory
+PDER,PDE,missing,R,sensory,SN3,mechanosensory
+ALML,ALM,missing,L,sensory,SN3,mechanosensory
+ALMR,ALM,missing,R,sensory,SN3,mechanosensory
+AVM,AVM,missing,missing,sensory,SN3,mechanosensory
+PVM,PVM,missing,missing,sensory,SN3,mechanosensory
+PLML,PLM,missing,L,sensory,SN3,mechanosensory
+PLMR,PLM,missing,R,sensory,SN3,mechanosensory
+FLPL,FLP,missing,L,sensory,SN3,mechanosensory
+FLPR,FLP,missing,R,sensory,SN3,mechanosensory
+DVA,DVA,missing,missing,sensory,SN3,mechanosensory
+PVDL,PVD,missing,L,sensory,SN3,mechanosensory
+PVDR,PVD,missing,R,sensory,SN3,mechanosensory
+PHAL,PHA,missing,L,sensory,SN2,phasmid
+PHAR,PHA,missing,R,sensory,SN2,phasmid
+PHBL,PHB,missing,L,sensory,SN2,phasmid
+PHBR,PHB,missing,R,sensory,SN2,phasmid
+PHCL,PHC,missing,L,sensory,SN2,phasmid
+PHCR,PHC,missing,R,sensory,SN2,phasmid
+IL2DL,IL2,D,L,sensory,SN1,cephalic
+IL2DR,IL2,D,R,sensory,SN1,cephalic
+IL2L,IL2,missing,L,sensory,SN1,cephalic
+IL2R,IL2,missing,R,sensory,SN1,cephalic
+IL2VL,IL2,V,L,sensory,SN1,cephalic
+IL2VR,IL2,V,R,sensory,SN1,cephalic
+CEPDL,CEP,D,L,sensory,SN1,cephalic
+CEPDR,CEP,D,R,sensory,SN1,cephalic
+CEPVL,CEP,V,L,sensory,SN1,cephalic
+CEPVR,CEP,V,R,sensory,SN1,cephalic
+OLQDL,OLQ,D,L,sensory,SN1,cephalic
+OLQDR,OLQ,D,R,sensory,SN1,cephalic
+OLQVL,OLQ,V,L,sensory,SN1,cephalic
+OLQVR,OLQ,V,R,sensory,SN1,cephalic
+URYDL,URY,D,L,sensory,SN1,cephalic
+URYDR,URY,D,R,sensory,SN1,cephalic
+URYVL,URY,V,L,sensory,SN1,cephalic
+URYVR,URY,V,R,sensory,SN1,cephalic
+OLLL,OLL,missing,L,sensory,SN1,cephalic
+OLLR,OLL,missing,R,sensory,SN1,cephalic
+IL1DL,IL1,D,L,sensory,SN1,cephalic
+IL1DR,IL1,D,R,sensory,SN1,cephalic
+IL1L,IL1,missing,L,sensory,SN1,cephalic
+IL1R,IL1,missing,R,sensory,SN1,cephalic
+IL1VL,IL1,V,L,sensory,SN1,cephalic
+IL1VR,IL1,V,R,sensory,SN1,cephalic
+AIML,AIM,missing,L,interneuron,category 4 interneuron,
+AIMR,AIM,missing,R,interneuron,category 4 interneuron,
+AINL,AIN,missing,L,interneuron,category 4 interneuron,
+AINR,AIN,missing,R,interneuron,category 4 interneuron,
+RIH,RIH,missing,missing,interneuron,category 4 interneuron,
+URBL,URB,missing,L,interneuron,category 4 interneuron,
+URBR,URB,missing,R,interneuron,category 4 interneuron,
+RIR,RIR,missing,missing,interneuron,category 4 interneuron,
+PVQL,PVQ,missing,L,interneuron,layer 3 interneuron,
+PVQR,PVQ,missing,R,interneuron,layer 3 interneuron,
+ALA,ALA,missing,missing,interneuron,layer 3 interneuron,
+BDUL,BDU,missing,L,interneuron,layer 3 interneuron,
+BDUR,BDU,missing,R,interneuron,layer 3 interneuron,
+AIYL,AIY,missing,L,interneuron,layer 3 interneuron,
+AIYR,AIY,missing,R,interneuron,layer 3 interneuron,
+AIAL,AIA,missing,L,interneuron,layer 3 interneuron,
+AIAR,AIA,missing,R,interneuron,layer 3 interneuron,
+AUAL,AUA,missing,L,interneuron,layer 3 interneuron,
+AUAR,AUA,missing,R,interneuron,layer 3 interneuron,
+AIZL,AIZ,missing,L,interneuron,layer 3 interneuron,
+AIZR,AIZ,missing,R,interneuron,layer 3 interneuron,
+RIS,RIS,missing,missing,interneuron,layer 3 interneuron,
+ADAL,ADA,missing,L,interneuron,layer 3 interneuron,
+ADAR,ADA,missing,R,interneuron,layer 3 interneuron,
+RIFL,RIF,missing,L,interneuron,layer 3 interneuron,
+RIFR,RIF,missing,R,interneuron,layer 3 interneuron,
+PVR,PVR,missing,missing,interneuron,layer 3 interneuron,
+AVFL,AVF,missing,L,interneuron,layer 3 interneuron,
+AVFR,AVF,missing,R,interneuron,layer 3 interneuron,
+AVHL,AVH,missing,L,interneuron,layer 3 interneuron,
+AVHR,AVH,missing,R,interneuron,layer 3 interneuron,
+PVPL,PVP,missing,L,interneuron,layer 3 interneuron,
+PVPR,PVP,missing,R,interneuron,layer 3 interneuron,
+PVNL,PVN,missing,L,interneuron,layer 3 interneuron,
+PVNR,PVN,missing,R,interneuron,layer 3 interneuron,
+AVG,AVG,missing,missing,interneuron,layer 3 interneuron,
+LUAL,LUA,missing,L,interneuron,layer 3 interneuron,
+LUAR,LUA,missing,R,interneuron,layer 3 interneuron,
+DVB,DVB,missing,missing,interneuron,layer 3 interneuron,
+RIBL,RIB,missing,L,interneuron,layer 2 interneuron,
+RIBR,RIB,missing,R,interneuron,layer 2 interneuron,
+AIBL,AIB,missing,L,interneuron,layer 2 interneuron,
+AIBR,AIB,missing,R,interneuron,layer 2 interneuron,
+RIGL,RIG,missing,L,interneuron,layer 2 interneuron,
+RIGR,RIG,missing,R,interneuron,layer 2 interneuron,
+RMGL,RMG,missing,L,interneuron,layer 2 interneuron,
+RMGR,RMG,missing,R,interneuron,layer 2 interneuron,
+RICL,RIC,missing,L,interneuron,layer 2 interneuron,
+RICR,RIC,missing,R,interneuron,layer 2 interneuron,
+SAADR,SAA,D,R,interneuron,layer 2 interneuron,
+SAAVL,SAA,V,L,interneuron,layer 2 interneuron,
+SAADL,SAA,D,L,interneuron,layer 2 interneuron,
+SAAVR,SAA,V,R,interneuron,layer 2 interneuron,
+RMFL,RMF,missing,L,interneuron,layer 2 interneuron,
+RMFR,RMF,missing,R,interneuron,layer 2 interneuron,
+AVKL,AVK,missing,L,interneuron,layer 2 interneuron,
+AVKR,AVK,missing,R,interneuron,layer 2 interneuron,
+DVC,DVC,missing,missing,interneuron,layer 2 interneuron,
+AVJR,AVJ,missing,R,interneuron,layer 2 interneuron,
+AVJL,AVJ,missing,L,interneuron,layer 2 interneuron,
+PVT,PVT,missing,missing,interneuron,layer 2 interneuron,
+AVDL,AVD,missing,L,interneuron,layer 2 interneuron,
+AVDR,AVD,missing,R,interneuron,layer 2 interneuron,
+AVL,AVL,missing,missing,interneuron,layer 2 interneuron,
+PVWL,PVW,missing,L,interneuron,layer 2 interneuron,
+PVWR,PVW,missing,R,interneuron,layer 2 interneuron,
+RIAL,RIA,missing,L,interneuron,layer 1 interneuron,
+RIAR,RIA,missing,R,interneuron,layer 1 interneuron,
+RIML,RIM,missing,L,interneuron,layer 1 interneuron,"motorneuron in White et al., 1986"
+RIMR,RIM,missing,R,interneuron,layer 1 interneuron,"motorneuron in White et al., 1986"
+AVEL,AVE,missing,L,interneuron,layer 1 interneuron,
+AVER,AVE,missing,R,interneuron,layer 1 interneuron,
+RID,RID,missing,missing,interneuron,layer 1 interneuron,
+AVBL,AVB,missing,L,interneuron,layer 1 interneuron,
+AVBR,AVB,missing,R,interneuron,layer 1 interneuron,
+AVAL,AVA,missing,L,interneuron,layer 1 interneuron,
+AVAR,AVA,missing,R,interneuron,layer 1 interneuron,
+PVCL,PVC,missing,L,interneuron,layer 1 interneuron,
+PVCR,PVC,missing,R,interneuron,layer 1 interneuron,
+RIPL,RIP,missing,L,interneuron,linker to pharynx,
+RIPR,RIP,missing,R,interneuron,linker to pharynx,
+RMEL,RME,missing,L,motorneuron,head motor neuron,
+RMER,RME,missing,R,motorneuron,head motor neuron,
+RMED,RME,D,missing,motorneuron,head motor neuron,
+RMEV,RME,V,missing,motorneuron,head motor neuron,
+URADL,URA,D,L,motorneuron,head motor neuron,
+URADR,URA,D,R,motorneuron,head motor neuron,
+URAVL,URA,V,L,motorneuron,head motor neuron,
+URAVR,URA,V,R,motorneuron,head motor neuron,
+RMDDL,RMD,D,L,motorneuron,head motor neuron,
+RMDDR,RMD,D,R,motorneuron,head motor neuron,
+RMDL,RMD,missing,L,motorneuron,head motor neuron,
+RMDR,RMD,missing,R,motorneuron,head motor neuron,
+RMDVL,RMD,V,L,motorneuron,head motor neuron,
+RMDVR,RMD,V,R,motorneuron,head motor neuron,
+RMHL,RMH,missing,L,motorneuron,head motor neuron,
+RMHR,RMH,missing,R,motorneuron,head motor neuron,
+RIVL,RIV,missing,L,motorneuron,head motor neuron,
+RIVR,RIV,missing,R,motorneuron,head motor neuron,
+SABD,SABD,missing,missing,motorneuron,sublateral motor neuron,"interneuron in White et al., 1986"
+SABVL,SABV,missing,L,motorneuron,sublateral motor neuron,"interneuron in White et al., 1986"
+SABVR,SABV,missing,R,motorneuron,sublateral motor neuron,"interneuron in White et al., 1986"
+SMDDL,SMD,D,L,motorneuron,sublateral motor neuron,
+SMDDR,SMD,D,R,motorneuron,sublateral motor neuron,
+SMDVL,SMD,V,L,motorneuron,sublateral motor neuron,
+SMDVR,SMD,V,R,motorneuron,sublateral motor neuron,
+SMBDL,SMB,D,L,motorneuron,sublateral motor neuron,
+SMBDR,SMB,D,R,motorneuron,sublateral motor neuron,
+SMBVL,SMB,V,L,motorneuron,sublateral motor neuron,
+SMBVR,SMB,V,R,motorneuron,sublateral motor neuron,
+SIBDL,SIB,D,L,motorneuron,sublateral motor neuron,"interneuron in White et al., 1986"
+SIBDR,SIB,D,R,motorneuron,sublateral motor neuron,"interneuron in White et al., 1986"
+SIBVL,SIB,V,L,motorneuron,sublateral motor neuron,"interneuron in White et al., 1986"
+SIBVR,SIB,V,R,motorneuron,sublateral motor neuron,"interneuron in White et al., 1986"
+SIADL,SIA,D,L,motorneuron,sublateral motor neuron,"interneuron in White et al., 1986"
+SIADR,SIA,D,R,motorneuron,sublateral motor neuron,"interneuron in White et al., 1986"
+SIAVL,SIA,V,L,motorneuron,sublateral motor neuron,"interneuron in White et al., 1986"
+SIAVR,SIA,V,R,motorneuron,sublateral motor neuron,"interneuron in White et al., 1986"
+DA01,DA01,missing,missing,motorneuron,ventral cord motor neuron,
+DA02,DA02,missing,missing,motorneuron,ventral cord motor neuron,
+DA03,DA03,missing,missing,motorneuron,ventral cord motor neuron,
+DA04,DA04,missing,missing,motorneuron,ventral cord motor neuron,
+DA05,DA05,missing,missing,motorneuron,ventral cord motor neuron,
+DA06,DA06,missing,missing,motorneuron,ventral cord motor neuron,
+DA07,DA07,missing,missing,motorneuron,ventral cord motor neuron,
+DA08,DA08,missing,missing,motorneuron,ventral cord motor neuron,
+DA09,DA09,missing,missing,motorneuron,ventral cord motor neuron,
+PDA,PDA,missing,missing,motorneuron,ventral cord motor neuron,
+DB01,DB01,missing,missing,motorneuron,ventral cord motor neuron,
+DB02,DB02,missing,missing,motorneuron,ventral cord motor neuron,
+DB03,DB03,missing,missing,motorneuron,ventral cord motor neuron,
+DB04,DB04,missing,missing,motorneuron,ventral cord motor neuron,
+DB05,DB05,missing,missing,motorneuron,ventral cord motor neuron,
+DB06,DB06,missing,missing,motorneuron,ventral cord motor neuron,
+DB07,DB07,missing,missing,motorneuron,ventral cord motor neuron,
+AS01,AS01,missing,missing,motorneuron,ventral cord motor neuron,
+AS02,AS02,missing,missing,motorneuron,ventral cord motor neuron,
+AS03,AS03,missing,missing,motorneuron,ventral cord motor neuron,
+AS04,AS04,missing,missing,motorneuron,ventral cord motor neuron,
+AS05,AS05,missing,missing,motorneuron,ventral cord motor neuron,
+AS06,AS06,missing,missing,motorneuron,ventral cord motor neuron,
+AS07,AS07,missing,missing,motorneuron,ventral cord motor neuron,
+AS08,AS08,missing,missing,motorneuron,ventral cord motor neuron,
+AS09,AS09,missing,missing,motorneuron,ventral cord motor neuron,
+AS10,AS10,missing,missing,motorneuron,ventral cord motor neuron,
+AS11,AS11,missing,missing,motorneuron,ventral cord motor neuron,
+PDB,PDB,missing,missing,motorneuron,ventral cord motor neuron,
+DD01,DD01,missing,missing,motorneuron,ventral cord motor neuron,
+DD02,DD02,missing,missing,motorneuron,ventral cord motor neuron,
+DD03,DD03,missing,missing,motorneuron,ventral cord motor neuron,
+DD04,DD04,missing,missing,motorneuron,ventral cord motor neuron,
+DD05,DD05,missing,missing,motorneuron,ventral cord motor neuron,
+DD06,DD06,missing,missing,motorneuron,ventral cord motor neuron,
+VA01,VA01,missing,missing,motorneuron,ventral cord motor neuron,
+VA02,VA02,missing,missing,motorneuron,ventral cord motor neuron,
+VA03,VA03,missing,missing,motorneuron,ventral cord motor neuron,
+VA04,VA04,missing,missing,motorneuron,ventral cord motor neuron,
+VA05,VA05,missing,missing,motorneuron,ventral cord motor neuron,
+VA06,VA06,missing,missing,motorneuron,ventral cord motor neuron,
+VA07,VA07,missing,missing,motorneuron,ventral cord motor neuron,
+VA08,VA08,missing,missing,motorneuron,ventral cord motor neuron,
+VA09,VA09,missing,missing,motorneuron,ventral cord motor neuron,
+VA10,VA10,missing,missing,motorneuron,ventral cord motor neuron,
+VA11,VA11,missing,missing,motorneuron,ventral cord motor neuron,
+VA12,VA12,missing,missing,motorneuron,ventral cord motor neuron,
+VB01,VB01,missing,missing,motorneuron,ventral cord motor neuron,
+VB02,VB02,missing,missing,motorneuron,ventral cord motor neuron,
+VB03,VB03,missing,missing,motorneuron,ventral cord motor neuron,
+VB04,VB04,missing,missing,motorneuron,ventral cord motor neuron,
+VB05,VB05,missing,missing,motorneuron,ventral cord motor neuron,
+VB06,VB06,missing,missing,motorneuron,ventral cord motor neuron,
+VB07,VB07,missing,missing,motorneuron,ventral cord motor neuron,
+VB08,VB08,missing,missing,motorneuron,ventral cord motor neuron,
+VB09,VB09,missing,missing,motorneuron,ventral cord motor neuron,
+VB10,VB10,missing,missing,motorneuron,ventral cord motor neuron,
+VB11,VB11,missing,missing,motorneuron,ventral cord motor neuron,
+VD01,VD01,missing,missing,motorneuron,ventral cord motor neuron,
+VD02,VD02,missing,missing,motorneuron,ventral cord motor neuron,
+VD03,VD03,missing,missing,motorneuron,ventral cord motor neuron,
+VD04,VD04,missing,missing,motorneuron,ventral cord motor neuron,
+VD05,VD05,missing,missing,motorneuron,ventral cord motor neuron,
+VD06,VD06,missing,missing,motorneuron,ventral cord motor neuron,
+VD07,VD07,missing,missing,motorneuron,ventral cord motor neuron,
+VD08,VD08,missing,missing,motorneuron,ventral cord motor neuron,
+VD09,VD09,missing,missing,motorneuron,ventral cord motor neuron,
+VD10,VD10,missing,missing,motorneuron,ventral cord motor neuron,
+VD11,VD11,missing,missing,motorneuron,ventral cord motor neuron,
+VD12,VD12,missing,missing,motorneuron,ventral cord motor neuron,
+VD13,VD13,missing,missing,motorneuron,ventral cord motor neuron,
+dBWML1,dBWML1,missing,missing,muscle,endorgan,
+dBWML2,dBWML2,missing,missing,muscle,endorgan,
+dBWML3,dBWML3,missing,missing,muscle,endorgan,
+dBWML4,dBWML4,missing,missing,muscle,endorgan,
+dBWML5,dBWML5,missing,missing,muscle,endorgan,
+dBWML6,dBWML6,missing,missing,muscle,endorgan,
+dBWML7,dBWML7,missing,missing,muscle,endorgan,
+dBWMR1,dBWMR1,missing,missing,muscle,endorgan,
+dBWMR2,dBWMR2,missing,missing,muscle,endorgan,
+dBWMR3,dBWMR3,missing,missing,muscle,endorgan,
+dBWMR4,dBWMR4,missing,missing,muscle,endorgan,
+dBWMR5,dBWMR5,missing,missing,muscle,endorgan,
+dBWMR6,dBWMR6,missing,missing,muscle,endorgan,
+dBWMR7,dBWMR7,missing,missing,muscle,endorgan,
+vBWML1,vBWML1,missing,missing,muscle,endorgan,
+vBWML2,vBWML2,missing,missing,muscle,endorgan,
+vBWML3,vBWML3,missing,missing,muscle,endorgan,
+vBWML4,vBWML4,missing,missing,muscle,endorgan,
+vBWML5,vBWML5,missing,missing,muscle,endorgan,
+vBWML6,vBWML6,missing,missing,muscle,endorgan,
+vBWML7,vBWML7,missing,missing,muscle,endorgan,
+vBWMR1,vBWMR1,missing,missing,muscle,endorgan,
+vBWMR2,vBWMR2,missing,missing,muscle,endorgan,
+vBWMR3,vBWMR3,missing,missing,muscle,endorgan,
+vBWMR4,vBWMR4,missing,missing,muscle,endorgan,
+vBWMR5,vBWMR5,missing,missing,muscle,endorgan,
+vBWMR6,vBWMR6,missing,missing,muscle,endorgan,
+vBWMR7,vBWMR7,missing,missing,muscle,endorgan,
+dBWML8,dBWML8,missing,missing,muscle,endorgan,
+dBWML9,dBWML9,missing,missing,muscle,endorgan,
+dBWML10,dBWML10,missing,missing,muscle,endorgan,
+dBWML11,dBWML11,missing,missing,muscle,endorgan,
+dBWML12,dBWML12,missing,missing,muscle,endorgan,
+dBWML13,dBWML13,missing,missing,muscle,endorgan,
+dBWML14,dBWML14,missing,missing,muscle,endorgan,
+dBWML15,dBWML15,missing,missing,muscle,endorgan,
+dBWML16,dBWML16,missing,missing,muscle,endorgan,
+dBWML17,dBWML17,missing,missing,muscle,endorgan,
+dBWML18,dBWML18,missing,missing,muscle,endorgan,
+dBWML19,dBWML19,missing,missing,muscle,endorgan,
+dBWML20,dBWML20,missing,missing,muscle,endorgan,
+dBWML21,dBWML21,missing,missing,muscle,endorgan,
+dBWML22,dBWML22,missing,missing,muscle,endorgan,
+dBWML23,dBWML23,missing,missing,muscle,endorgan,
+dBWML24,dBWML24,missing,missing,muscle,endorgan,
+dBWMR8,dBWMR8,missing,missing,muscle,endorgan,
+dBWMR9,dBWMR9,missing,missing,muscle,endorgan,
+dBWMR10,dBWMR10,missing,missing,muscle,endorgan,
+dBWMR11,dBWMR11,missing,missing,muscle,endorgan,
+dBWMR12,dBWMR12,missing,missing,muscle,endorgan,
+dBWMR13,dBWMR13,missing,missing,muscle,endorgan,
+dBWMR14,dBWMR14,missing,missing,muscle,endorgan,
+dBWMR15,dBWMR15,missing,missing,muscle,endorgan,
+dBWMR16,dBWMR16,missing,missing,muscle,endorgan,
+dBWMR17,dBWMR17,missing,missing,muscle,endorgan,
+dBWMR18,dBWMR18,missing,missing,muscle,endorgan,
+dBWMR19,dBWMR19,missing,missing,muscle,endorgan,
+dBWMR20,dBWMR20,missing,missing,muscle,endorgan,
+dBWMR21,dBWMR21,missing,missing,muscle,endorgan,
+dBWMR22,dBWMR22,missing,missing,muscle,endorgan,
+dBWMR23,dBWMR23,missing,missing,muscle,endorgan,
+dBWMR24,dBWMR24,missing,missing,muscle,endorgan,
+vBWML8,vBWML8,missing,missing,muscle,endorgan,
+vBWML9,vBWML9,missing,missing,muscle,endorgan,
+vBWML10,vBWML10,missing,missing,muscle,endorgan,
+vBWML11,vBWML11,missing,missing,muscle,endorgan,
+vBWML12,vBWML12,missing,missing,muscle,endorgan,
+vBWML13,vBWML13,missing,missing,muscle,endorgan,
+vBWML14,vBWML14,missing,missing,muscle,endorgan,
+vBWML15,vBWML15,missing,missing,muscle,endorgan,
+vBWML16,vBWML16,missing,missing,muscle,endorgan,
+vBWML17,vBWML17,missing,missing,muscle,endorgan,
+vBWML18,vBWML18,missing,missing,muscle,endorgan,
+vBWML19,vBWML19,missing,missing,muscle,endorgan,
+vBWML20,vBWML20,missing,missing,muscle,endorgan,
+vBWML21,vBWML21,missing,missing,muscle,endorgan,
+vBWML22,vBWML22,missing,missing,muscle,endorgan,
+vBWML23,vBWML23,missing,missing,muscle,endorgan,
+vBWMR8,vBWMR8,missing,missing,muscle,endorgan,
+vBWMR9,vBWMR9,missing,missing,muscle,endorgan,
+vBWMR10,vBWMR10,missing,missing,muscle,endorgan,
+vBWMR11,vBWMR11,missing,missing,muscle,endorgan,
+vBWMR12,vBWMR12,missing,missing,muscle,endorgan,
+vBWMR13,vBWMR13,missing,missing,muscle,endorgan,
+vBWMR14,vBWMR14,missing,missing,muscle,endorgan,
+vBWMR15,vBWMR15,missing,missing,muscle,endorgan,
+vBWMR16,vBWMR16,missing,missing,muscle,endorgan,
+vBWMR17,vBWMR17,missing,missing,muscle,endorgan,
+vBWMR18,vBWMR18,missing,missing,muscle,endorgan,
+vBWMR19,vBWMR19,missing,missing,muscle,endorgan,
+vBWMR20,vBWMR20,missing,missing,muscle,endorgan,
+vBWMR21,vBWMR21,missing,missing,muscle,endorgan,
+vBWMR22,vBWMR22,missing,missing,muscle,endorgan,
+vBWMR23,vBWMR23,missing,missing,muscle,endorgan,
+vBWMR24,vBWMR24,missing,missing,muscle,endorgan,
+CEPshDL,CEPsh,D,L,glial,endorgan,
+CEPshDR,CEPsh,D,R,glial,endorgan,
+CEPshVL,CEPsh,V,L,glial,endorgan,
+CEPshVR,CEPsh,V,R,glial,endorgan,
+GLRDL,GLR,D,L,glial,endorgan,
+GLRDR,GLR,D,R,glial,endorgan,
+GLRL,GLR,missing,L,glial,endorgan,
+GLRR,GLR,missing,R,glial,endorgan,
+GLRVL,GLR,V,L,glial,endorgan,
+GLRVR,GLR,V,R,glial,endorgan,
+CANL,CAN,missing,L,neuron,endorgan,
+CANR,CAN,missing,R,neuron,endorgan,
+exc_gl,exc_gl,missing,missing,excretory,endorgan,
+hmc,hmc,missing,missing,head mesodermal cell,endorgan,
+hyp,hyp,missing,missing,hypodermis,endorgan,
+int,int,missing,missing,intestine,endorgan,
+mu_intL,mu_int,missing,L,muscle,endorgan,
+mu_intR,mu_int,missing,R,muscle,endorgan,
+mu_anal,mu_anal,missing,missing,muscle,endorgan,
+mu_sphincter,mu_sphincter,missing,missing,muscle,endorgan,
+I1L,I1,missing,L,interneuron,,pharynx
+I1R,I1,missing,R,interneuron,,pharynx
+I2L,I2,missing,L,interneuron,,pharynx
+I2R,I2,missing,R,interneuron,,pharynx
+I3,I3,missing,missing,interneuron,,pharynx
+I4,I4,missing,missing,interneuron,,pharynx
+I5,I5,missing,missing,interneuron,,pharynx
+I6,I6,missing,missing,interneuron,,pharynx
+M1,M1,missing,missing,motorneuron,,pharynx
+M2L,M2,missing,L,motorneuron,,pharynx
+M2R,M2,missing,R,motorneuron,,pharynx
+M3L,M3,missing,L,motorneuron,,pharynx
+M3R,M3,missing,R,motorneuron,,pharynx
+M4,M4,missing,missing,motorneuron,,pharynx
+M5,M5,missing,missing,motorneuron,,pharynx
+MCL,MC,missing,L,motorneuron,,pharynx
+MCR,MC,missing,R,motorneuron,,pharynx
+MI,MI,missing,missing,motorneuron,,pharynx
+NSML,NSM,missing,L,interneuron,,pharynx
+NSMR,NSM,missing,R,interneuron,,pharynx
+pm1,pm1,missing,missing,muscle (myoepithelium),,pharynx
+pm2d,pm2d,missing,missing,muscle (myoepithelium),,pharynx
+pm2vl,pm2vl,missing,missing,muscle (myoepithelium),,pharynx
+pm2vr,pm2vr,missing,missing,muscle (myoepithelium),,pharynx
+pm3d,pm3d,missing,missing,muscle (myoepithelium),,pharynx
+pm3vl,pm3vl,missing,missing,muscle (myoepithelium),,pharynx
+pm3vr,pm3vr,missing,missing,muscle (myoepithelium),,pharynx
+pm4d,pm4d,missing,missing,muscle (myoepithelium),,pharynx
+pm4vl,pm4vl,missing,missing,muscle (myoepithelium),,pharynx
+pm4vr,pm4vr,missing,missing,muscle (myoepithelium),,pharynx
+pm5d,pm5d,missing,missing,muscle (myoepithelium),,pharynx
+pm5vl,pm5vl,missing,missing,muscle (myoepithelium),,pharynx
+pm5vr,pm5vr,missing,missing,muscle (myoepithelium),,pharynx
+pm6d,pm6d,missing,missing,muscle (myoepithelium),,pharynx
+pm6vl,pm6vl,missing,missing,muscle (myoepithelium),,pharynx
+pm6vr,pm6vr,missing,missing,muscle (myoepithelium),,pharynx
+pm7d,pm7d,missing,missing,muscle (myoepithelium),,pharynx
+pm7vl,pm7vl,missing,missing,muscle (myoepithelium),,pharynx
+pm7vr,pm7vr,missing,missing,muscle (myoepithelium),,pharynx
+pm8,pm8,missing,missing,muscle (myoepithelium),,pharynx
+mc1dl,mc1dl,missing,missing,marginal cell,,pharynx
+mc1dr,mc1dr,missing,missing,marginal cell,,pharynx
+mc1v,mc1v,missing,missing,marginal cell,,pharynx
+mc2dl,mc2dl,missing,missing,marginal cell,,pharynx
+mc2dr,mc2dr,missing,missing,marginal cell,,pharynx
+mc2v,mc2v,missing,missing,marginal cell,,pharynx
+mc3dl,mc3dl,missing,missing,marginal cell,,pharynx
+mc3dr,mc3dr,missing,missing,marginal cell,,pharynx
+mc3v,mc3v,missing,missing,marginal cell,,pharynx
+e1D,e1D,missing,missing,epithelium,,pharynx
+e1VL,e1V,missing,L,epithelium,,pharynx
+e1VR,e1V,missing,R,epithelium,,pharynx
+e2DL,e2D,missing,L,epithelium,,pharynx
+e2DR,e2D,missing,R,epithelium,,pharynx
+e2V,e2V,missing,missing,epithelium,,pharynx
+e3D,e3D,missing,missing,epithelium,,pharynx
+e3VL,e3V,missing,L,epithelium,,pharynx
+e3VR,e3V,missing,R,epithelium,,pharynx
+g1P,g1P,missing,missing,glial cell,,pharynx
+g1AL,g1A,missing,L,glial cell,,pharynx
+g1AR,g1A,missing,R,glial cell,,pharynx
+g2L,g2,missing,L,glial cell,,pharynx
+g2R,g2,missing,R,glial cell,,pharynx
+bm,bm,missing,missing,basement membrane,,pharynx

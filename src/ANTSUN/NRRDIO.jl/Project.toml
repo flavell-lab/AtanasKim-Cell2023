@@ -1,0 +1,9 @@
+name = "NRRDIO"
+uuid = "2b58dc58-51f6-4832-b7bb-5c043ac22718"
+authors = ["jungsoo "]
+version = "0.1.0"
+
+[deps]
+CodecZlib = "944b1d66-785c-5afd-91f1-9de20f533193"
+DataStructures = "864edb3b-99cc-5e75-8d2d-829cb0a9cfe8"
+TranscodingStreams = "3bb67fe8-82b1-5028-8e26-92a6c54297fa"

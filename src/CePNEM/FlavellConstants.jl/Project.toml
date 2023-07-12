@@ -1,0 +1,4 @@
+name = "FlavellConstants"
+uuid = "dcb47d69-08dc-4104-8beb-08f30fc48864"
+authors = ["Jungsoo Kim <jungsu93@gmail.com>"]
+version = "0.1.0"

@@ -1,0 +1,18 @@
+name = "ND2Process"
+uuid = "6ef1548a-7d8d-11e9-1627-d5addeeb8a7e"
+authors = ["Jungsoo Kim <jungsoo@mit.edu>"]
+version = "0.6.0"
+
+[deps]
+CoordinateTransformations = "150eb455-5306-5404-9cee-2592286d6298"
+FlavellBase = "88015601-1e04-46e4-b006-ffd03bd63f42"
+HDF5 = "f67ccb44-e63f-5c2f-98bd-6dc0ccc4ba2f"
+Images = "916415d5-f1e6-5110-898d-aaa5f9f070e0"
+MHDIO = "7d797e2a-7db6-11e9-07d5-4fa370062df3"
+NRRDIO = "2b58dc58-51f6-4832-b7bb-5c043ac22718"
+OffsetArrays = "6fe1bfb0-de20-5000-8ca7-80f57d26f881"
+ProgressMeter = "92933f4c-e287-5a05-a399-4b506db050ca"
+PyCall = "438e738f-606a-5dbb-bf0a-cddfbfd45ab0"
+PyPlot = "d330b81b-6aea-500a-939a-2ce795aea3ee"
+Rotations = "6038ab10-8711-5258-84ad-4b1120ba62dc"
+VideoIO = "d6d074c3-1acf-5d4c-9a43-ef38773959a2"

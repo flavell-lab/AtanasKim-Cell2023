@@ -1,0 +1,7 @@
+name = "MHDIO"
+uuid = "7d797e2a-7db6-11e9-07d5-4fa370062df3"
+authors = ["Jungsoo Kim <jungsoo@mit.edu>"]
+version = "0.1.0"
+
+[deps]
+DataStructures = "864edb3b-99cc-5e75-8d2d-829cb0a9cfe8"

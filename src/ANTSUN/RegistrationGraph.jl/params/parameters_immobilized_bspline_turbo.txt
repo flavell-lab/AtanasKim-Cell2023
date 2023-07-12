@@ -1,0 +1,70 @@
+// Example parameter file for B-spline registration
+// C-style comments: //
+(FixedInternalImagePixelType "float")
+(MovingInternalImagePixelType "float")
+(UseDirectionCosines "true")
+
+// **************** Main Components **************************
+// (Registration "MultiResolutionRegistration")
+(Registration "MultiMetricMultiResolutionRegistration")
+
+
+(Interpolator "BSplineInterpolator")
+(ResampleInterpolator "FinalBSplineInterpolator")
+(Resampler "DefaultResampler")
+
+(FixedImagePyramid "FixedSmoothingImagePyramid")
+(MovingImagePyramid "MovingSmoothingImagePyramid")
+(ImagePyramidSchedule 0 0 0  0 0 0  0 0 0  0 0 0)
+// (ImagePyramidSchedule  9 9 3  4.5 4.5 1.5 0 0 0)
+// (ImagePyramidSchedule 4.8 4.8 1.6  2.4 2.4 0.8  0 0 0)
+
+(Optimizer "AdaptiveStochasticGradientDescent")
+(Transform "RecursiveBSplineTransform")
+// (Metric "AdvancedNormalizedCorrelation")
+(Metric "AdvancedNormalizedCorrelation" "TransformBendingEnergyPenalty")
+(Metric0Weight 1)
+(Metric1Weight 1 3 5 10)
+
+// ***************** Transformation **************************
+(FinalGridSpacingInPhysicalUnits 1)
+(GridSpacingSchedule 20  14  10  7)
+(HowToCombineTransforms "Compose")
+
+// ******************** Multiresolution **********************
+(NumberOfResolutions 4)
+
+// ******************* Optimizer ****************************
+(MaximumNumberOfIterations 50000)
+// (MaximumStepLength 0.5)
+
+
+// **************** Image sampling **********************
+(NewSamplesEveryIteration "true")
+// (ImageSampler "Random")
+
+(ImageSampler "RandomCoordinate")
+(UseRandomSampleRegion "true")
+// use default sample region size = 1/3 of image size
+// (SampleRegionSize 40 40 10  40 40 10  40 40 10  40 40 10  40 40 10)
+(NumberOfSpatialSamples 15000)
+
+(MaximumNumberOfSamplingAttempts 500)
+(RequiredRatioOfValidSamples 0.2)
+
+// ************* Interpolation and Resampling ****************
+(BSplineInterpolationOrder 3)
+(FinalBSplineInterpolationOrder 3)
+
+//Default pixel value for pixels that come from outside the picture:
+(DefaultPixelValue 124)
+
+(WriteResultImage "true")
+(WriteResultImageAfterEachResolution "true")
+(WriteTransformParametersEachResolution "true")
+// (WritePyramidImagesAfterEachResolution "true")
+
+// The pixel type and format of the resulting deformed moving image
+(ResultImagePixelType "short")
+(ResultImageFormat "nrrd")
+(CompressResultImage "true")

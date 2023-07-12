@@ -1,0 +1,22 @@
+name = "ExtractRegisteredData"
+uuid = "666c3283-de97-4a1c-ae8f-c95ebd78c995"
+authors = ["goldenratio1618 <adamatanas@gmail.com>"]
+version = "1.0.0"
+
+[deps]
+Arpack = "7d9fca2a-8960-54d3-9f78-7d1dccf2cb97"
+Clustering = "aaaa29a8-35af-508c-8bc3-b662a17a0fe5"
+DataStructures = "864edb3b-99cc-5e75-8d2d-829cb0a9cfe8"
+FlavellBase = "88015601-1e04-46e4-b006-ffd03bd63f42"
+ImageDataIO = "3d2e8b00-a1b7-4eb6-bd24-c7e2252788fb"
+Graphs = "86223c79-3864-5bf0-83f7-82e725a168b6"
+LinearAlgebra = "37e2e46d-f89d-539d-b4ee-838fcccc9c8e"
+NRRDIO = "2b58dc58-51f6-4832-b7bb-5c043ac22718"
+Plots = "91a5bcdd-55d7-5caf-9e0b-520d859cae80"
+ProgressMeter = "92933f4c-e287-5a05-a399-4b506db050ca"
+PyPlot = "d330b81b-6aea-500a-939a-2ce795aea3ee"
+SegmentationTools = "e237ef6b-7742-4eaa-bd5c-c836a2002561"
+SimpleWeightedGraphs = "47aef6b3-ad0c-573a-a1e2-d07658019622"
+SparseArrays = "2f01184e-e22b-5df5-ae63-d93ebab69eaf"
+Statistics = "10745b16-79ce-11e8-11f9-7d13ad32a3b2"
+StatsBase = "2913bbd2-ae8a-5f71-8c99-4fb6c76f3a91"

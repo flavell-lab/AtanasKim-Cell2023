@@ -1,0 +1,216 @@
+# use a fixed random seed to guarantee that when you run the code twice you will get the same outcome
+manual_seed: 0
+# model configuration
+model:
+  # model class, e.g. UNet3D, ResidualUNet3D
+  name: UNet3D
+  # number of input channels to the model
+  in_channels: 1
+  # number of output channels
+  out_channels: 2
+  # determines the order of operators in a single layer (gcr - GroupNorm+Conv3d+ReLU)
+  layer_order: gcr
+  # feature maps scale factor
+  f_maps: 32
+  # number of groups in the groupnorm
+  num_groups: 8
+  # apply element-wise nn.Sigmoid after the final 1x1 convolution, otherwise apply nn.Softmax
+  final_sigmoid: false
+  # if True applies the final normalization layer (sigmoid or softmax), otherwise the networks returns the output from the final convolution layer; use False for regression problems, e.g. de-noising
+  is_segmentation: true
+# trainer configuration
+trainer:
+  # number of patches per batch
+  batch_size: 1
+  # path to the checkpoint directory
+  checkpoint_dir: 3dunet
+  # path to latest checkpoint; if provided the training will be resumed from that checkpoint
+  resume: null
+  # how many iterations between validations
+  validate_after_iters: 10
+  # how many iterations between tensorboard logging
+  log_after_iters: 10
+  # how many iterations between checkpoint outputting
+  checkpoint_after_iters: 500
+  # max number of epochs
+  epochs: 1200
+  # max number of iterations
+  iters: 300000
+  # model with higher eval score is considered better
+  eval_score_higher_is_better: True
+# optimizer configuration
+optimizer:
+  algorithm: Adam
+  # initial learning rate
+  learning_rate: 0.00005
+  # weight decay
+  weight_decay: 0.0001
+  # weight_decay: 0
+  # momentum (only for SGD)
+  # momentum: 0.99
+# loss function configuration
+loss:
+  # loss function to be used during training
+  name: PixelWiseCrossEntropyLoss
+  # A manual rescaling weight given to each class.
+  weights: null
+  # a target value that is ignored and does not contribute to the input gradient
+  ignore_index: null
+# evaluation metric configuration
+eval_metric:
+  name: PixelWiseMeanIoU
+  # a target label that is ignored during metric evaluation
+  ignore_index: null
+  #skip_channels: [0]
+# learning rate scheduler configuration
+lr_scheduler:
+  # reduce learning rate when evaluation metric plateaus
+  name: ReduceLROnPlateau
+  # use 'max' if eval_score_higher_is_better=True, 'min' otherwise
+  mode: max
+  # factor by which learning rate will be reduced
+  factor: 0.7
+  # number of *validation runs* with no improvement after which learning rate will be reduced
+  patience: 30
+# data loaders configuration
+loaders:
+  # class of the HDF5 dataset, currently StandardHDF5Dataset and LazyHDF5Dataset are supported.
+  # When using LazyHDF5Dataset make sure to set `num_workers = 1`, due to a bug in h5py which corrupts the data
+  # when reading from multiple threads.
+  dataset: StandardHDF5Dataset
+  # batch dimension; if number of GPUs is N > 1, then a batch_size of N * batch_size will automatically be taken for DataParallel
+  batch_size: 1
+  # how many subprocesses to use for data loading
+  num_workers: 12
+  # path to the raw data within the H5
+  raw_internal_path: raw
+  # path to the the label data within the H5
+  label_internal_path: label
+  # path to the pixel-wise weight map withing the H5 if present
+  weight_internal_path: weight
+  # configuration of the train loader
+  train:
+    # absolute paths to the training datasets; if a given path is a directory all H5 files ('*.h5', '*.hdf', '*.hdf5', '*.hd5')
+    # inside this this directory will be included as well (non-recursively)
+    file_paths:
+      - '/home/aaatanas/Dropbox (MIT)/Flavell Lab/Image Registration/unet_data/hdf5_train/'
+
+    # SliceBuilder configuration, i.e. how to iterate over the input volume patch-by-patch
+    slice_builder:
+      # SliceBuilder class
+      name: PixelWiseWeightedSliceBuilder
+      # train patch size given to the network (adapt to fit in your GPU mem, generally the bigger patch the better)
+      patch_shape: [28, 144, 320]
+      # train stride between patches; not used for this slice builder
+      # Was [4,16,16]
+      stride_shape: null
+      # number of patches to use per training dataset
+      num_patches: 1
+
+    # data transformations/augmentations
+    transformer:
+      raw:
+        # re-scale the values to be in the interval [-1, 1]
+        # use Normalize instead of Standardize because datasets are highly non-Gaussian
+        - name: Normalize
+        # Performs random affine transform, including shear, translation, scaling, and rotation.
+        - name: RandomAffineTransform
+          order: 1
+        # randomly flips an image across randomly chosen axis
+        - name: RandomFlip
+        # rotate an image by 90 degrees around a randomly chosen plane
+        # AAA: Always rotates around Z-axis.
+        - name: RandomRotate90
+        # rotate an image by a random degrees from taken from (-angle_spectrum, angle_spectrum) interval
+        # AAA: generates mean data in regions that got rotated out view.
+        - name: BSplineDeformation
+        # # apply elasitc deformations of 3D patches on a per-voxel mesh
+        # # AAA: don't warp in z dimension, and warp more strongly in xy plane
+        #- name: ElasticDeformation
+        #  spline_order: 3
+        #  apply_3d: false
+        #  execution_probability: 0.2
+        # # randomly adjust contrast (only works with Normalized data sets, not Standardized)
+        - name: RandomContrast
+          use_data_mean: True
+          execution_probability: 0.2
+        # apply additive Gaussian noise
+        - name: AdditiveGaussianNoise
+          execution_probability: 0.2
+          scale: [0.0, 0.1]
+        # apply additive Poisson noise
+        - name: AdditivePoissonNoise
+          execution_probability: 0.2
+          lam: [0.0, 0.02]
+        # convert to torch tensor
+        - name: ToTensor
+          # add additional 'channel' axis when the input data is 3D
+          expand_dims: true
+      label:
+        - name: RandomAffineTransform
+          cval: 0
+          order: 1
+        - name: RandomFlip
+        - name: RandomRotate90
+        - name: BSplineDeformation
+          cval: 0
+        # - name: ElasticDeformation
+        #   apply_3d: false
+        #   spline_order: 0
+        #   execution_probability: 0.2
+        - name: ToTensor
+          # do not expand dims for cross-entropy loss
+          expand_dims: false
+          # cross-entropy loss requires target to be of type 'long'
+          dtype: 'long'
+      weight:
+        - name: RandomAffineTransform
+          cval: 0
+          order: 1 
+        - name: RandomFlip
+        - name: RandomRotate90       
+        - name: BSplineDeformation
+          cval: 0
+        #- name: ElasticDeformation
+        #  apply_3d: false
+        #  spline_order: 0
+        #  execution_probability: 0.2
+        - name: ToTensor
+          # do not expand dims for cross-entropy loss
+          expand_dims: false
+          # cross-entropy loss requires weight to be of type 'long'
+          dtype: 'long'
+
+  # configuration of the validation loaders
+  val:
+    # paths to the validation datasets; if a given path is a directory all H5 files ('*.h5', '*.hdf', '*.hdf5', '*.hd5')
+    # inside this this directory will be included as well (non-recursively)
+    file_paths:
+      - '/home/aaatanas/Dropbox (MIT)/Flavell Lab/Image Registration/unet_data/hdf5_val/'
+
+    # SliceBuilder configuration
+    slice_builder:
+      # SliceBuilder class
+      name: PixelWiseWeightedSliceBuilder
+      # validation patch (can be bigger than train patch since there is no backprop)
+      patch_shape: [28, 144, 320]
+      # validation stride; not used for this slice builder
+      stride_shape: null
+      # number of patches to use per validation dataset
+      num_patches: 1
+
+    # no data augmentation during validation
+    transformer:
+      raw:
+        - name: Normalize
+        - name: ToTensor
+          expand_dims: true
+      label:
+        - name: ToTensor
+          expand_dims: false
+          dtype: 'int64'
+      weight:
+        - name: ToTensor
+          expand_dims: False
+          dtype: 'int64'
+      
