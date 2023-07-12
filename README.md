@@ -11,7 +11,8 @@ bioRxiv 2022.11.11.516186; doi: https://doi.org/10.1101/2022.11.11.516186
 **\* Equal Contribution**
 
 ## Package directory
-List of packages in this repository. To access the latest/maintained versions, please access the individual repositories using the links below: 
+List of packages in this repository. Note that the source code included in this repository is from when the article was published. Any updates (e.g. bug fix, new feature) to any of the packages are not reflected on the code included in this repository.  
+**To use/install or access the latest/maintained versions, please access the individual repositories** using the links below: 
 ### ANTSUN
  - [BehaviorDataNIR.jl](https://github.com/flavell-lab/BehaviorDataNIR.jl)  
  - [CaAnalysis.jl](https://github.com/flavell-lab/CaAnalysis.jl)  
