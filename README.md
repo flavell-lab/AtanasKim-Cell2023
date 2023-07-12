@@ -14,6 +14,7 @@ bioRxiv 2022.11.11.516186; doi: https://doi.org/10.1101/2022.11.11.516186
 List of packages in this repository. To access the latest/maintained versions, please access the individual repositories using the links below: 
 ### ANTSUN
  - [BehaviorDataNIR.jl](https://github.com/flavell-lab/BehaviorDataNIR.jl)  
+ - [CaAnalysis.jl](https://github.com/flavell-lab/CaAnalysis.jl)  
  - [Clustering.jl](https://github.com/flavell-lab/Clustering.jl)  
  - [ExtractRegisteredData.jl](https://github.com/flavell-lab/ExtractRegisteredData.jl)  
  - [FFTRegGPU.jl](https://github.com/flavell-lab/FFTRegGPU.jl)  
@@ -37,11 +38,11 @@ List of packages in this repository. To access the latest/maintained versions, p
 ### CePNEM
  - [ANTSUNData.jl](https://github.com/flavell-lab/ANTSUNData.jl)  
  - [AnalysisBase.jl](https://github.com/flavell-lab/AnalysisBase.jl)  
- - [CaAnalysis.jl](https://github.com/flavell-lab/CaAnalysis.jl)  
  - [CePNEM.jl](https://github.com/flavell-lab/CePNEM.jl)  
  - [CePNEMAnalysis.jl](https://github.com/flavell-lab/CePNEMAnalysis.jl)  
  - [EncoderModel.jl](https://github.com/flavell-lab/EncoderModel.jl)  
  - [FlavellConstants.jl](https://github.com/flavell-lab/FlavellConstants.jl)  
+ - [HierarchicalPosteriorModel.jl](https://github.com/flavell-lab/HierarchicalPosteriorModel.jl)  
 ### Instrumentation
  - [ConfocalTrackerControl.jl](https://github.com/flavell-lab/ConfocalTrackerControl.jl)  
  - [StageControl.jl](https://github.com/flavell-lab/StageControl.jl)  
