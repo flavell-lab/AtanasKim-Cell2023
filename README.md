@@ -14,6 +14,7 @@ bioRxiv 2022.11.11.516186; doi: https://doi.org/10.1101/2022.11.11.516186
 List of packages in this repository. Note that the source code included in this repository is from when the article was published. Any updates (e.g. bug fix, new feature) to any of the packages are not reflected on the code included in this repository.  
 **To use/install or access the latest/maintained versions, please access the individual repositories** using the links below: 
 ### ANTSUN
+Calcium and behavior data processing and extraction
  - [BehaviorDataNIR.jl](https://github.com/flavell-lab/BehaviorDataNIR.jl)  
  - [CaAnalysis.jl](https://github.com/flavell-lab/CaAnalysis.jl)  
  - [Clustering.jl](https://github.com/flavell-lab/Clustering.jl)  
@@ -37,6 +38,7 @@ List of packages in this repository. Note that the source code included in this 
  - [pytorch-3dunet](https://github.com/flavell-lab/pytorch-3dunet)  
  - [unet2d](https://github.com/flavell-lab/unet2d)  
 ### CePNEM
+Modeling and analysis tools
  - [ANTSUNData.jl](https://github.com/flavell-lab/ANTSUNData.jl)  
  - [AnalysisBase.jl](https://github.com/flavell-lab/AnalysisBase.jl)  
  - [CePNEM.jl](https://github.com/flavell-lab/CePNEM.jl)  
@@ -45,5 +47,6 @@ List of packages in this repository. Note that the source code included in this 
  - [FlavellConstants.jl](https://github.com/flavell-lab/FlavellConstants.jl)  
  - [HierarchicalPosteriorModel.jl](https://github.com/flavell-lab/HierarchicalPosteriorModel.jl)  
 ### Instrumentation
+Microscope control and data acquisition software (GUI)
  - [ConfocalTrackerControl.jl](https://github.com/flavell-lab/ConfocalTrackerControl.jl)  
  - [StageControl.jl](https://github.com/flavell-lab/StageControl.jl)  
