@@ -1,14 +1,17 @@
 ## Intro
-This repository contains the source codes used in the article (TODO: update after publication)
+This repository contains the source codes used in [the article below](/data1/prj_kfc/cell-data).
 
 ## Citation
-To cite this work (datasets, methods, modeling, etc.), please refer to the article: 
+To cite this work (datasets, methods, code, packages, models, results, etc.), please refer to the article: 
 
 #### Brain-wide representations of behavior spanning multiple timescales and states in C. elegans
 **Adam A. Atanas\***, **Jungsoo Kim\***, Ziyu Wang, Eric Bueno, McCoy Becker, Di Kang, Jungyeon Park, Cassi Estrem, Talya S. Kramer, Saba Baskoylu, Vikash K. Mansingkha, Steven W. Flavell  
 bioRxiv 2022.11.11.516186; doi: https://doi.org/10.1101/2022.11.11.516186  
 
 **\* Equal Contribution**
+
+## WormWideWeb
+Datasets and modeling results (encoding detection) can be browsed in [WormWideWeb](https://wormwideweb.org/). On the website, you can easily find the neural (GCaMP) traces of specific recorded/identified neuron classes, along with the information on how those neurons encode behavioral information—identified by the CePNEM model.
 
 ## Notebooks and scripts
 Notebooks/scripts used in this project are stored in the directory `notebook`.  
