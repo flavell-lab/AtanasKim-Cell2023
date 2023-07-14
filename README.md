@@ -22,7 +22,7 @@ List of packages in this repository (in the directory `src`). Note that the sour
 ### ANTSUN
 Calcium and behavior data processing and extraction
 
- - [ANTSUN_NeuroPAL.ipynb](https://github.com/flavell-lab/ANTSUN)` is a notebook that executes the full ANTSUN pipeline, from raw microscope data to neural traces and behaviors
+ - [ANTSUN_NeuroPAL.ipynb](https://github.com/flavell-lab/ANTSUN) is a notebook that executes the full ANTSUN pipeline, from raw microscope data to neural traces and behaviors
  - [BehaviorDataNIR.jl](https://github.com/flavell-lab/BehaviorDataNIR.jl) extracts behavioral data from NIR microscope recordings
  - [CaAnalysis.jl](https://github.com/flavell-lab/CaAnalysis.jl) processes GCaMP traces
  - [Clustering.jl](https://github.com/flavell-lab/Clustering.jl) contains a custom hierarchical clustering algorithm used in neuron identity matching
