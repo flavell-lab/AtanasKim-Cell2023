@@ -22,7 +22,7 @@ List of packages in this repository (in the directory `src`). Note that the sour
 ### ANTSUN
 Calcium and behavior data processing and extraction
 
- - `notebook/ANTSUN_NeuroPAL.ipynb` is a notebook that executes the full ANTSUN pipeline, from raw microscope data to neural traces and behaviors.
+ - `notebook/ANTSUN_NeuroPAL.ipynb` is a notebook that executes the full ANTSUN pipeline, from raw microscope data to neural traces and behaviors
  - [BehaviorDataNIR.jl](https://github.com/flavell-lab/BehaviorDataNIR.jl) extracts behavioral data from NIR microscope recordings
  - [CaAnalysis.jl](https://github.com/flavell-lab/CaAnalysis.jl) processes GCaMP traces
  - [Clustering.jl](https://github.com/flavell-lab/Clustering.jl) contains a custom hierarchical clustering algorithm used in neuron identity matching
@@ -36,7 +36,7 @@ Calcium and behavior data processing and extraction
  - [NRRDIO.jl](https://github.com/flavell-lab/NRRDIO.jl) contains IO code for the NRRD image format
  - [NeuroPALData.jl](https://github.com/flavell-lab/NeuroPALData.jl) contains a collection of NeuroPAL labeling utilities
  - [RegistrationGraph.jl](https://github.com/flavell-lab/RegistrationGraph.jl) generates and executes registration problems to map neural identities between time points
- - [SLURMManager.jl](https://github.com/flavell-lab/SLURMManager.jl) Called by `RegistrationGraph.jl` to execute the registration problems on a computing cluster using `SLURM`.
+ - [SLURMManager.jl](https://github.com/flavell-lab/SLURMManager.jl) interacts with `SLURM` to execute code on a cluster
  - [SegmentationStats.jl](https://github.com/flavell-lab/SegmentationStats.jl) contains segmentation utlility code
  - [SegmentationTools.jl](https://github.com/flavell-lab/SegmentationTools.jl) performs semantic and instance segmentation using the 3D-UNet `pytorch-3dunet`, and can generate and format UNet input and training data
  - [TotalVariation.jl](https://github.com/flavell-lab/TotalVariation.jl) performs total-variation noise filtering
