@@ -1,7 +1,7 @@
 name = "HierarchicalPosteriorModel"
 uuid = "ef6dc223-d5d9-4b1e-8fe9-3290aa0c7c6f"
 authors = ["Adam Atanas <adamatanas@gmail.com>"]
-version = "0.1.0"
+version = "1.0.0"
 
 [deps]
 Distributions = "31c24e10-a181-5473-b8eb-7969acd0382f"
@@ -11,3 +11,4 @@ Optim = "429524aa-4258-5aef-a3af-852621145aeb"
 Statistics = "10745b16-79ce-11e8-11f9-7d13ad32a3b2"
 StatsBase = "2913bbd2-ae8a-5f71-8c99-4fb6c76f3a91"
 CePNEM = "e5213632-2d12-443e-a840-e9f463057f13"
+SpecialFunctions = "276daf66-3868-5448-9aa4-cd146d93841b"

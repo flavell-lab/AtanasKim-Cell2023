@@ -116,6 +116,8 @@ function magnitude_vec(list_v::Array{<:AbstractFloat,2})
 end
 
 """
+    offset_xy(x_imp, y_imp, x_array, y_array, segment_end_matrix, seg_range; unbin_fn=x->unit_bfs_pix_to_stage_unit(2*x+3))
+
 Corrects x and y position variables to correspond to the worm centroid, rather than the worm pharynx.
 
 # Arguments:
@@ -164,6 +166,8 @@ end
 
 
 """
+    get_reversal_events(param, velocity, t_range, max_t)
+
 Finds reversal events.
 
 # Arguments:
@@ -205,6 +209,8 @@ function get_reversal_events(param, velocity, t_range, max_t)
 end
 
 """
+    compute_reversal_times(reversals, max_t)
+
 Computes the duration of each reversal event.
 
 # Arguments:

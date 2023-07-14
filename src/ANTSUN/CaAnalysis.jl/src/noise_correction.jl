@@ -219,6 +219,7 @@ Applies multiple data processing steps to the traces. The order of processing st
 - `divide::Bool`: Whether to divide the activity channel traces by the marker channel traces.
 - `normalize_fn::Function`: Function to use to get "average" activity when normalizing traces.
 - `k::Union{Real,Nothing}`: Deconvolution parameter. Set this to (time length of confocal volume) / (GCaMP decay half-life)
+- `valid_rois`: List of ROIs to include in the analysis. If left blank, all ROIs will be included.
 """
 function process_traces(param::Dict, activity_traces::Dict, marker_traces::Dict, threshold::Real, t_range; activity_bkg=nothing, marker_bkg=nothing,
         min_intensity::Real=0, interpolate::Bool=false, denoise::Bool=false, bleach_corr::Bool=false, divide::Bool=false, normalize_fn::Function=x->quantile(x,0.2),

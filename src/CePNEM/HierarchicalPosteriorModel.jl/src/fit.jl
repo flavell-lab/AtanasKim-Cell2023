@@ -1,5 +1,5 @@
 """
-optimize_MAP(Ps::Vector{Matrix{Float64}}, params_init::HBParams; idx_scaling::Vector{Int64}=[2,3,4])
+    optimize_MAP(Ps::Vector{Matrix{Float64}}, params_init::HBParams; idx_scaling::Vector{Int64}=[2,3,4])
 
 Optimize the maximum a posteriori (MAP) estimate for the given parameter samples `Ps` and initial parameters `params_init`.
 

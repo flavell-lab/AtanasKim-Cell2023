@@ -1,5 +1,10 @@
 
 """
+    detect_encoding_changes(
+        fit_results, p, θh_pos_is_ventral, threshold_artifact, rngs, 
+        relative_encoding_strength, datasets; beh_percent=25
+    )
+
 Detects all neurons with encoding changes in all datasets across all time ranges.
 
 # Arguments
@@ -12,7 +17,8 @@ Detects all neurons with encoding changes in all datasets across all time ranges
 - `relative_encoding_strength`: Relative encoding strength of neurons.
 - `datasets`: Datasets to compute encoding changes for.
 """
-function detect_encoding_changes(fit_results, p, θh_pos_is_ventral, threshold_artifact, rngs, relative_encoding_strength, datasets; beh_percent=25)
+function detect_encoding_changes(fit_results, p, θh_pos_is_ventral, threshold_artifact, rngs, 
+        relative_encoding_strength, datasets; beh_percent=25)
     encoding_changes = Dict()
     encoding_change_p_vals = Dict()
     @showprogress for dataset in datasets
@@ -79,7 +85,9 @@ end
 
 
 """
-Corrects encoding changes by deleting nonencoding neurons or EWMA-only encoding changes with partially-encoding neurons.
+    correct_encoding_changes(fit_results::Dict, analysis_dict::Dict)
+
+Prunes encoding changes by deleting nonencoding neurons or EWMA-only encoding changes with partially-encoding neurons.
 
 # Arguments:
 - `fit_results::Dict`: Dictionary containing CePNEM fit results.
@@ -134,8 +142,32 @@ function correct_encoding_changes(fit_results::Dict, analysis_dict::Dict)
     return encoding_changes_corrected
 end
 
+"""
+    get_enc_change_stats(
+        fit_results::Dict, enc_change_p::Dict, neuron_p::Dict, datasets::Vector{String};
+        rngs_valid::Union{Nothing,Array{Int,1}}=nothing, p::Float64=0.05
+    )
 
-function get_enc_change_stats(fit_results, enc_change_p, neuron_p, datasets; rngs_valid=nothing, p=0.05)
+Returns statistics on encoding changes across datasets.
+
+# Arguments:
+- `fit_results::Dict`: Dictionary containing CePNEM fit results.
+- `enc_change_p::Dict`: Dictionary containing encoding change p-values.
+- `neuron_p::Dict`: Dictionary containing encoding p-values.
+- `datasets::Vector{String}`: List of datasets to analyze.
+- `rngs_valid::Union{Nothing,Array{Int,1}}`: Time ranges to analyze.
+- `p::Float64`: Significance threshold.
+
+# Returns:
+- `n_neurons_tot::Int`: Total number of neurons.
+- `n_neurons_enc_change_all::Int`: Number of encoding changing neurons.
+- `n_neurons_nenc_enc_change::Int`: Number of non-encoding neurons with encoding changes. This should be 0 if you've properly pruned your encoding changes.
+- `n_neurons_enc_change_all::Int`: Number of encoding-changing neurons.
+- `n_neurons_enc_change_beh::Array{Int,1}`: Number of encoding-changing neurons that encode behavior.
+- `dict_enc_change::Dict`: Dictionary containing encoding change statistics.
+- `dict_enc::Dict`: Dictionary containing encoding statistics.
+"""
+function get_enc_change_stats(fit_results::Dict, enc_change_p::Dict, neuron_p::Dict, datasets::Vector{String}; rngs_valid=nothing, p::Float64=0.05)
     n_neurons_tot = 0
     n_neurons_enc = 0
     n_neurons_nenc_enc_change = 0
@@ -190,7 +222,10 @@ function get_enc_change_stats(fit_results, enc_change_p, neuron_p, datasets; rng
     return n_neurons_tot, n_neurons_enc_change_all, n_neurons_enc, n_neurons_nenc_enc_change, n_neurons_enc_change_beh, dict_enc_change, dict_enc
 end
 
-""" Computes summary statistics.
+""" 
+    encoding_summary_stats(datasets, enc_stat_dict, dict_enc, dict_enc_change, consistent_neurons)
+
+Computes summary statistics.
 `function encoding_summary_stats(datasets, enc_stat_dict, dict_enc, dict_enc_change, consistent_neurons)`
 
 `return n_neurons_tot, n_neurons_enc, n_neurons_enc_change, n_neurons_consistent, n_neurons_fully_static,
@@ -225,16 +260,6 @@ function encoding_summary_stats(datasets, enc_stat_dict, dict_enc, dict_enc_chan
             n_neurons_quasi_static, n_neurons_dynamic, n_neurons_indeterminable
 end
 
-function get_subcats(beh)
-    if beh == "v"
-        subcats = [("rev_slope_neg", "rev_slope_pos"), ("rev", "fwd"), ("rect_neg", "rect_pos"), ("fwd_slope_neg", "fwd_slope_pos")]
-    elseif beh == "θh"
-        subcats = [("rev_dorsal", "rev_ventral"), ("dorsal", "ventral"), ("rect_dorsal", "rect_ventral"), ("fwd_dorsal", "fwd_ventral")]
-    elseif beh == "P"
-        subcats = [("rev_inh", "rev_act"), ("inh", "act"), ("rect_inh", "rect_act"), ("fwd_inh", "fwd_act")]
-    end 
-    return subcats
-end
 
 function get_enc_change_cat_p_vals(enc_change_dict)
     p_val_dict = Dict()
@@ -295,36 +320,152 @@ function get_enc_change_category(dataset, rngs, neuron, encoding_changes)
     return encoding_change
 end
 
-function MSE_correct_encoding_changes(analysis_dict, datasets)
-    encoding_changing_neurons_msecorrect = Dict()
-    encoding_changing_neurons_msecorrect_mh = Dict()
-    for dataset = datasets
-        encoding_changing_neurons_msecorrect[dataset] = Dict()
-        encoding_changing_neurons_msecorrect_mh[dataset] = Dict()
-        for rngs in keys(analysis_dict["encoding_changes_corrected"][dataset])
-            encoding_changing_neurons_msecorrect[dataset][rngs] = Dict()
-            encoding_changing_neurons_msecorrect_mh[dataset][rngs] = Dict()
-            encoding_changing_neurons_msecorrect_mh[dataset][rngs]["p_vals"] = Dict()
-            encoding_changing_neurons_msecorrect_mh[dataset][rngs]["neurons"] = Int32[]
-            
-            p_vals = Float64[]
-            for neuron in analysis_dict["encoding_changes_corrected"][dataset][rngs]["all"]
-                combined_better = [prob_P_greater_Q(analysis_dict["mse_ewma_skip"][dataset][neuron][rngs[i],rngs[i],:],
-                        [analysis_dict["mse_fits_combinedtrain"][dataset][rngs][neuron]["cost_test"][rngs[i]]]) for i=1:2]
-                encoding_changing_neurons_msecorrect[dataset][rngs][neuron] = combined_better
-                push!(p_vals, min(1,minimum(combined_better) * length(combined_better)))
-            end
-            if length(p_vals) == 0
+"""
+    compute_feeding_encoding_changes(analysis_dict::Dict, fit_results::Dict, datasets_neuropal_baseline::Vector{String},
+        datasets_neuropal_stim::Vector{String}, stim_times::Dict; percent_norm::Real=10, percent_P_thresh::Real=12.5)
+
+This function computes the feeding encoding changes for a given set of datasets. It takes in the following arguments:
+
+* `analysis_dict::Dict`: A dictionary containing the CePNEM analysis results.
+* `fit_results::Dict`: A dictionary containing the CePNEM fit results.
+* `datasets_neuropal_baseline::Vector{String}`: A list of names of the baseline datasets to use for training.
+* `datasets_neuropal_stim::Vector{string}`: A list of names of the heat-stimulation datasets to use for testing.
+* `stim_times::Dict`: A dictionary containing the stimulation times for each heat-stim dataset.
+* `percent_norm::Real=10`: Fluorescence normalization percentile across datasets (ie: if set at 10, the analysis will use F/F10)
+* `percent_P_thresh::Real=12.5`: Fraction of time points the animal needs  of neurons to threshold based on P-values.
+
+The function returns a dictionary containing the following keys:
+
+* `mse_train`: A dictionary containing the mean squared error (MSE) for each dataset in the training set.
+* `mse_train_null`: A dictionary containing the MSE for the null model for each dataset in the training set.
+* `p_val`: A dictionary containing the P-values for the encoding changes (ie: whether the pre-stimulus model outperformed the post-stimulus model).
+* `mse_prestim`: A dictionary containing the MSE for the prestimulus datasets.
+* `mse_poststim`: A dictionary containing the MSE for the poststimulus datasets.
+* `mse_prestim_null`: A dictionary containing the MSE for the null model on the prestimulus datasets.
+* `mse_poststim_null`: A dictionary containing the MSE for the null model on the poststimulus datasets.
+* `prestim_fits`: A dictionary containing the fit to pumping for the appended prestimulus datasets.
+* `poststim_fits`: A dictionary containing the fit to pumping for the appended poststimulus datasets.
+* `prestim_neurons`: A dictionary containing the appended neural data for the prestimulus datasets.
+* `poststim_neurons`: A dictionary containing the appended neural data for the poststimulus datasets.
+* `prestim_P`: A dictionary containing the appended pumping values for the prestimulus datasets.
+* `poststim_P`: A dictionary containing the appended pumping values for the poststimulus datasets.
+"""
+function compute_feeding_encoding_changes(analysis_dict::Dict, fit_results::Dict, datasets_neuropal_baseline::Vector{String},
+        datasets_neuropal_stim::Vector{String}, stim_times::Dict; percent_norm::Real=10, percent_P_thresh::Real=12.5)
+
+    dict_result = Dict()
+    dict_result["mse_train"] = Dict()
+    dict_result["mse_train_null"] = Dict()
+
+    dict_result["p_val"] = Dict()
+    dict_result["mse_prestim"] = Dict()
+    dict_result["mse_poststim"] = Dict()
+    dict_result["mse_prestim_null"] = Dict()
+    dict_result["mse_poststim_null"] = Dict()
+    dict_result["prestim_fits"] = Dict()
+    dict_result["poststim_fits"] = Dict()
+    dict_result["prestim_neurons"] = Dict()
+    dict_result["poststim_neurons"] = Dict()
+    dict_result["prestim_P"] = Dict()
+    dict_result["poststim_P"] = Dict()
+
+    @showprogress for neuron_name = keys(analysis_dict["matches"])
+        datasets_use = datasets_neuropal_baseline
+
+        P_appended = Float64[]
+        n_appended = Float64[]
+        for (dataset, n) = analysis_dict["matches"][neuron_name]
+            if dataset ∉ datasets_use
                 continue
             end
-            p_vals = adjust(p_vals, BenjaminiHochberg())
-            for (i,neuron) in enumerate(analysis_dict["encoding_changes_corrected"][dataset][rngs]["all"])
-                encoding_changing_neurons_msecorrect_mh[dataset][rngs]["p_vals"][neuron] = p_vals[i]
-                if p_vals[i] < 0.05
-                    push!(encoding_changing_neurons_msecorrect_mh[dataset][rngs]["neurons"], neuron)
+            # need to ensure F/F10 actually produces minimum value
+            if percentile(fit_results[dataset]["P"], percent_P_thresh) > 0
+                continue
+            end
+            append!(P_appended, fit_results[dataset]["P"])
+            if n > size(fit_results[dataset]["trace_original"], 1)
+                @warn("Neuron $neuron_name, dataset $dataset, n $n")
+            end
+            append!(n_appended, fit_results[dataset]["trace_original"][n,:] ./ percentile(fit_results[dataset]["trace_original"][n,:], percent_norm))
+        end
+
+        if length(n_appended) == 0
+            continue
+        end
+
+        # fit GLM model
+        data = DataFrame(P=P_appended, n=n_appended)
+        model = lm(@formula(P ~ n + 1), data)
+
+        y_pred = GLM.predict(model, data)
+
+        dict_result["mse_train"][neuron_name] = mean((P_appended .- y_pred).^2)
+        dict_result["mse_train_null"][neuron_name] = mean((P_appended .- mean(P_appended)).^2)
+
+
+        datasets_fit = datasets_neuropal_stim
+        prestim_neurons = Float64[]
+        prestim_fits = Float64[]
+        prestim_P = Float64[]
+        poststim_neurons = Float64[]
+        poststim_fits = Float64[]
+        poststim_P = Float64[]
+        mse_prestim = Float64[]
+        null_mse_prestim = Float64[]
+        mse_poststim = Float64[]
+        null_mse_poststim = Float64[]
+        for (dataset, n) = analysis_dict["matches"][neuron_name]
+            if dataset ∉ datasets_fit
+                continue
+            end
+            for rng=1:2
+                # need to ensure F/F10 actually produces minimum value on the hypothesized-consistent data range (1)
+                if percentile(fit_results[dataset]["P"][fit_results[dataset]["ranges"][1]], percent_P_thresh*maximum(fit_results[dataset]["ranges"][end])/maximum(fit_results[dataset]["ranges"][1])) > 0
+                    continue
+                end
+                perc = fit_results[dataset]["trace_original"][n,fit_results[dataset]["ranges"][rng]] ./ percentile(fit_results[dataset]["trace_original"][n,:], percent_norm)
+                n_vals = perc
+
+                y_pred = GLM.predict(model, DataFrame(n=n_vals))
+                if rng == 1
+                    push!(mse_prestim, mean((fit_results[dataset]["P"][fit_results[dataset]["ranges"][rng]] .- y_pred).^2))
+                    append!(prestim_fits, y_pred)
+                    append!(prestim_neurons, n_vals)
+                    append!(prestim_P, fit_results[dataset]["P"][fit_results[dataset]["ranges"][rng]])
+                    push!(null_mse_prestim, mean((fit_results[dataset]["P"][fit_results[dataset]["ranges"][rng]] .- mean(P_appended)).^2))
+                elseif rng == 2
+                    push!(mse_poststim, mean((fit_results[dataset]["P"][fit_results[dataset]["ranges"][rng]] .- y_pred).^2))
+                    append!(poststim_fits, y_pred)
+                    append!(poststim_neurons, n_vals)
+                    append!(poststim_P, fit_results[dataset]["P"][fit_results[dataset]["ranges"][rng]])
+                    push!(null_mse_poststim, mean((fit_results[dataset]["P"][fit_results[dataset]["ranges"][rng]] .- mean(P_appended)).^2))
                 end
             end
         end
+
+        if length(mse_prestim) == 0
+            continue
+        end
+
+        prestim = mse_prestim .- null_mse_prestim
+        poststim = mse_poststim .- null_mse_poststim
+        dict_result["mse_prestim"][neuron_name] = mse_prestim
+        dict_result["mse_poststim"][neuron_name] = mse_poststim
+        dict_result["mse_prestim_null"][neuron_name] = null_mse_prestim
+        dict_result["mse_poststim_null"][neuron_name] = null_mse_poststim
+        dict_result["prestim_fits"][neuron_name] = prestim_fits
+        dict_result["poststim_fits"][neuron_name] = poststim_fits
+        dict_result["prestim_neurons"][neuron_name] = prestim_neurons
+        dict_result["poststim_neurons"][neuron_name] = poststim_neurons
+        dict_result["prestim_P"][neuron_name] = prestim_P
+        dict_result["poststim_P"][neuron_name] = poststim_P
+
+        if length(prestim) > 1 && length(poststim) > 1
+            p_val = pvalue(SignedRankTest(prestim, poststim), tail=:left)
+        else
+            p_val = 1.0
+        end
+        dict_result["p_val"][neuron_name] = p_val
     end
-    return encoding_changing_neurons_msecorrect, encoding_changing_neurons_msecorrect_mh
+    return dict_result
 end

@@ -1,5 +1,10 @@
 """
-Makes a distance matrix (compatible with t-SNE) of neurons between multiple datasets.
+    make_distance_matrix(
+        datasets, fit_results, v_ranges, θh_ranges, P_ranges, neuron_categorization; 
+        s_weight=2, v_weight=1, min_P_rng=[0,2], use_all_ranges=false, rngs_valid=nothing
+    )
+
+Makes a distance matrix (compatible with UMAP) of neurons between multiple datasets.
 
 # Arguments:
 - `datasets`: Array of datasets to use.
@@ -111,6 +116,8 @@ end
 
 
 """
+    find_subset_idx(neuron_ids_tsne, neuron_categorization, datasets, rng, beh_category; beh_subcategory="all")
+
 Finds the index in `neuron_ids` of a subset of neurons defined by their behavioral encoding, returns a dictionary with keys being the datasets.
 Calling this function is necessary if you only wish to show a subset of neurons in your t-SNE plot.
 
@@ -154,6 +161,8 @@ end
 
 
 """
+    compute_tsne(distance_matrix, n_tsne, perplexities, n_iters; subset=false, subset_idx=[])
+
 Runs t-SNE algorithm on `distance_matrix`, returns solution with lowest KL-divergence.
 
 # Arguments
@@ -192,6 +201,8 @@ end
 
 
 """
+    extrapolate_behaviors(fit_results, datasets, θh_pos_is_ventral) 
+
 Creates extrapolated behaviors by appending behaviors from individual animals.
 
 # Arguments
@@ -215,22 +226,38 @@ function extrapolate_behaviors(fit_results, datasets, θh_pos_is_ventral)
 end
 
 """
-Computes median CePNEM fits of all neurons in each dataset across the set of extrapolated behaviors.
+    compute_extrapolated_CePNEM_posterior_stats(
+        fit_results, analysis_dict, datasets, θh_pos_is_ventral; n_idx=10001, use_pumping=true, normalize=true
+    )
+
+Computes statistics of the CePNEM fits of all neurons in each dataset across the set of extrapolated behaviors.
 
 # Arguments
+- `fit_results`: CePNEM fit results.
 - `analysis_dict`: CePNEM fit analysis results dictionary.
 - `datasets`: Array of datasets to use.
 - `θh_pos_is_ventral`: Whether positive θh value corresponds to ventral (`true`) or dorsal (`false`) head bending.
 - `n_idx` (optional, default `10001`): Number of particles in CePNEM fits.
+- `use_pumping` (optional, default `true`): Whether to use pumping in CePNEM fits.
+- `normalize` (optional, default `true`): Whether to normalize CePNEM fits by signal value.
+
+# Returns
+- `median_CePNEM_fits`: Median of the CePNEM fits of each neurons in each dataset across the set of extrapolated behaviors.
+- `mean_CePNEM_fits`: Mean of the CePNEM fits of each neurons in each dataset across the set of extrapolated behaviors.
+- `var_CePNEM_fits`: Variance of the CePNEM fits of each neurons in each dataset across the set of extrapolated behaviors.
 """
-function compute_median_CePNEM_fits(analysis_dict, datasets, θh_pos_is_ventral; n_idx=10001)
+function compute_extrapolated_CePNEM_posterior_stats(fit_results, analysis_dict, datasets, θh_pos_is_ventral; n_idx=10001, use_pumping=true, normalize=true)
     median_CePNEM_fits = Dict()
+    mean_CePNEM_fits = Dict()
+    var_CePNEM_fits = Dict()
     all_behs = analysis_dict["extrapolated_behaviors"]
     @showprogress for dataset = datasets
         if dataset in keys(median_CePNEM_fits)
             continue
         end
-        median_CePNEM_fits[dataset] = zeros(2, fit_results[dataset]["num_neurons"], size(all_behs,1))
+        median_CePNEM_fits[dataset] = zeros(length(fit_results[dataset]["ranges"]), fit_results[dataset]["num_neurons"], size(all_behs,1))
+        mean_CePNEM_fits[dataset] = zeros(length(fit_results[dataset]["ranges"]), fit_results[dataset]["num_neurons"], size(all_behs,1))
+        var_CePNEM_fits[dataset] = zeros(length(fit_results[dataset]["ranges"]), fit_results[dataset]["num_neurons"], size(all_behs,1))
         for rng = 1:length(fit_results[dataset]["ranges"])
             for neuron = 1:fit_results[dataset]["num_neurons"]
                 extrap = zeros(size(all_behs,1), n_idx)
@@ -238,34 +265,42 @@ function compute_median_CePNEM_fits(analysis_dict, datasets, θh_pos_is_ventral;
                     ps = deepcopy(fit_results[dataset]["sampled_trace_params"][rng,neuron,idx,1:8])
                     ps[3] = ps[3] * (2*θh_pos_is_ventral[dataset]-1)
                     ps[6] = 0
-                    model = model_nl8(size(all_behs,1), ps..., all_behs[:,1], all_behs[:,2], all_behs[:,3])
-                    extrap[:,idx] .= (model .- mean(model)) .* analysis_dict["signal"][dataset][neuron]
+                    model = model_nl8(size(all_behs,1), ps..., all_behs[:,1], all_behs[:,2], (use_pumping ? all_behs[:,3] : zeros(length(all_behs[:,3]))))
+                    if normalize
+                        model = (model .- mean(model)) .* analysis_dict["signal"][dataset][neuron]
+                    end
+                    extrap[:,idx] .= model
                 end
                 median_CePNEM_fits[dataset][rng,neuron,:] .= median(extrap, dims=2)[:,1]
+                mean_CePNEM_fits[dataset][rng,neuron,:] .= mean(extrap, dims=2)[:,1]
+                var_CePNEM_fits[dataset][rng,neuron,:] .= var(extrap, dims=2)[:,1]
             end
         end
     end
-    return median_CePNEM_fits
+    return median_CePNEM_fits, mean_CePNEM_fits, var_CePNEM_fits
 end
 
 """
+    append_median_CePNEM_fits(fit_results, analysis_dict, umap_dict, datasets)
+
 Appends median CePNEM fits together into a single array.
 
 # Arguments
 - `fit_results`: CePNEM fit results.
-- `analysis_dict`: CePNEM fit analysis results dictionary.
+- `analysis_dict`: CePNEM fit analysis results dictionary containing the `extrapolated_behaviors` key.
+- `umap_dict`: UMAP results dictionary containing the `median_CePNEM_fits` key.
 - `datasets`: Array of datasets to use.
 """
-function append_median_CePNEM_fits(fit_results, analysis_dict, datasets)
+function append_median_CePNEM_fits(fit_results, analysis_dict, umap_dict, datasets)
     median_CePNEM_fits_all = zeros(2*sum([fit_results[d]["num_neurons"] for d in datasets]), size(analysis_dict["extrapolated_behaviors"], 1))
     count = 1
     for dataset in datasets
-        if !(dataset in keys(analysis_dict["median_CePNEM_fits"]))
+        if !(dataset in keys(umap_dict["median_CePNEM_fits"]))
             error("Dataset $(dataset) did not have median computed")
         end
         for rng=1:length(fit_results[dataset]["ranges"])
             for neuron=1:fit_results[dataset]["num_neurons"]
-                median_CePNEM_fits_all[count,:] .= analysis_dict["median_CePNEM_fits"][dataset][rng,neuron,:]
+                median_CePNEM_fits_all[count,:] .= umap_dict["median_CePNEM_fits"][dataset][rng,neuron,:]
                 count += 1
             end
         end
@@ -274,16 +309,20 @@ function append_median_CePNEM_fits(fit_results, analysis_dict, datasets)
 end
 
 """
+    project_CePNEM_to_UMAP(fit_results, analysis_dict, umap_dict, datasets, θh_pos_is_ventral; n_idx=10001, use_pumping=true)
+
 Projects median CePNEM fits to UMAP space.
 
 # Arguments
 - `fit_results`: CePNEM fit results.
 - `analysis_dict`: CePNEM fit analysis results dictionary.
+- `umap_dict`: UMAP results dictionary containing the `extrapolated_umap_median` key.
 - `datasets`: Array of datasets to use.
 - `θh_pos_is_ventral`: Whether positive θh value corresponds to ventral (`true`) or dorsal (`false`) head bending.
 - `n_idx` (optional, default `10001`): Number of particles in CePNEM fits.
+- `use_pumping` (optional, default `true`): Whether to use pumping in the model.
 """
-function project_CePNEM_to_UMAP(fit_results, analysis_dict, datasets, θh_pos_is_ventral; n_idx=10001)
+function project_CePNEM_to_UMAP(fit_results, analysis_dict, umap_dict, datasets, θh_pos_is_ventral; n_idx=10001, use_pumping=true)
     umap_extrap_all_median = Dict()
     all_behs = analysis_dict["extrapolated_behaviors"]
     @showprogress for dataset = datasets
@@ -296,10 +335,10 @@ function project_CePNEM_to_UMAP(fit_results, analysis_dict, datasets, θh_pos_is
                     ps = deepcopy(fit_results[dataset]["sampled_trace_params"][rng,neuron,idx,1:8])
                     ps[3] = ps[3] * (2*θh_pos_is_ventral[dataset]-1)
                     ps[6] = 0
-                    model = model_nl8(size(all_behs,1), ps..., all_behs[:,1], all_behs[:,2], all_behs[:,3])
+                    model = model_nl8(size(all_behs,1), ps..., all_behs[:,1], all_behs[:,2], (use_pumping ? all_behs[:,3] : zeros(length(all_behs[:,3]))))
                     extrap[:,idx] .= (model .- mean(model)) .* analysis_dict["signal"][dataset][neuron]
                 end
-                umap_extrap_all_median[dataset][rng][neuron] = UMAP.transform(analysis_dict["extrapolated_umap_median"], extrap)
+                umap_extrap_all_median[dataset][rng][neuron] = UMAP.transform(umap_dict["extrapolated_umap_median"], extrap)
             end
         end
     end
@@ -307,11 +346,53 @@ function project_CePNEM_to_UMAP(fit_results, analysis_dict, datasets, θh_pos_is
 end
 
 """
+    make_umap_rgb(feature_imgs, feature_colors, full_umap_img, color_all, contrast)
+
+Makes RGB image out of UMAP space.
+
+# Arguments:
+- `feature_imgs`: List of UMAP-projected images showing features of interest.
+- `feature_colors`: List of UMAP-projected images showing colors of interest.
+- `full_umap_img`: List of full UMAP image
+- `color_all`: Background color of full UMAP image
+- `contrast`: Contrast of features vs full UMAP image.
+"""
+function make_umap_rgb(feature_imgs, feature_colors, full_umap_img, color_all, contrast)
+    log_hist_weights = reverse(transpose(log.(1 .+ full_umap_img)), dims=1)
+    log_hist_weight_idx = zeros(length(feature_imgs), reverse(size(full_umap_img))...)
+    for (i,img) in enumerate(feature_imgs)
+        log_hist_weight_idx[i,:,:] .= reverse(transpose(log.(1 .+ img)), dims=1)
+    end
+    max_color = maximum(log_hist_weight_idx)
+    img = zeros(size(log_hist_weights)...,3)
+    img_all = contrast .* log_hist_weights ./ max_color
+    for c=1:3
+        img[:,:,c] .= sum([feature_colors[i][c] .* log_hist_weight_idx[i,:,:] ./ max_color for i=1:length(feature_imgs)])
+    end
+
+    img_color_sum = sum(img, dims=3)
+
+    img_contrast = zeros(size(img))
+    for c=1:3
+        img_contrast[:,:,c] .= (img_color_sum .< img_all) .* img_all .* color_all[c] .+ (img_color_sum .>= img_all) .* img[:,:,c]
+    end
+
+    return img_contrast[:,:,1] .* RGB(1,0,0) .+ img_contrast[:,:,2] .* RGB(0,1,0) .+ img_contrast[:,:,3] .* RGB(0,0,1)
+end
+
+
+"""
+    compute_umap_subcategories!(
+        fit_results, analysis_dict, umap_dict, datasets; dataset_cats="2021-05-26-07", 
+        rng_cats=1, ewma_step=5, ewma_max=50, suffix="_median", use_median=false
+    )
+
 Computes UMAP projections for each encoding category.
 
     # Arguments
     - `fit_results`: CePNEM fit results.
     - `analysis_dict`: CePNEM fit analysis results dictionary.
+    - `umap_dict`: UMAP results dictionary. Modified in-place by this function.
     - `datasets`: Array of datasets to use.
     - `dataset_cats` (optional, default `"2021-05-26-07"`): Dataset to use for finding encoding categories.
     - `rng_cats` (optional, default `1`): Range to use for finding encoding categories.
@@ -320,16 +401,16 @@ Computes UMAP projections for each encoding category.
     - `suffix` (optional, default `"_median"`): Suffix for extrapolated UMAP key in `analysis_dict`.
     - `use_median` (optional, default `false`): Whether to use median (`true`) or all posterior points (`false`) for extrapolated UMAP projections.
 """
-function compute_umap_subcategories!(fit_results, analysis_dict, datasets; dataset_cats="2021-05-26-07", rng_cats=1, ewma_step=5, ewma_max=50, suffix="_median", use_median=false)
-    xmin = analysis_dict["umap_xmin"]
-    xmax = analysis_dict["umap_xmax"]
-    xstep = analysis_dict["umap_xstep"]
+function compute_umap_subcategories!(fit_results, analysis_dict, umap_dict, datasets; dataset_cats="2021-05-26-07", rng_cats=1, ewma_step=5, ewma_max=50, suffix="_median", use_median=false)
+    xmin = umap_dict["umap_xmin"]
+    xmax = umap_dict["umap_xmax"]
+    xstep = umap_dict["umap_xstep"]
     
-    ymin = analysis_dict["umap_ymin"]
-    ymax = analysis_dict["umap_ymax"]
-    ystep = analysis_dict["umap_ystep"]
-    xaxis = analysis_dict["umap_xaxis"]
-    yaxis = analysis_dict["umap_yaxis"]
+    ymin = umap_dict["umap_ymin"]
+    ymax = umap_dict["umap_ymax"]
+    ystep = umap_dict["umap_ystep"]
+    xaxis = umap_dict["umap_xaxis"]
+    yaxis = umap_dict["umap_yaxis"]
     
     hist_weights = zeros(length(xaxis)-1, length(yaxis)-1)
     
@@ -361,9 +442,9 @@ function compute_umap_subcategories!(fit_results, analysis_dict, datasets; datas
         for rng = 1:length(fit_results[dataset]["ranges"])
             for neuron = 1:fit_results[dataset]["num_neurons"]
                 if use_median
-                    hist_fit = fit(Histogram, ([median(analysis_dict["umap_extrap_all$(suffix)"][dataset][rng][neuron][1,:])], [median(analysis_dict["umap_extrap_all$(suffix)"][dataset][rng][neuron][2,:])]), (xaxis, yaxis))
+                    hist_fit = fit(Histogram, ([median(umap_dict["umap_extrap_all$(suffix)"][dataset][rng][neuron][1,:])], [median(umap_dict["umap_extrap_all$(suffix)"][dataset][rng][neuron][2,:])]), (xaxis, yaxis))
                 else
-                    hist_fit = fit(Histogram, (analysis_dict["umap_extrap_all$(suffix)"][dataset][rng][neuron][1,:], analysis_dict["umap_extrap_all$(suffix)"][dataset][rng][neuron][2,:]), (xaxis, yaxis))
+                    hist_fit = fit(Histogram, (umap_dict["umap_extrap_all$(suffix)"][dataset][rng][neuron][1,:], umap_dict["umap_extrap_all$(suffix)"][dataset][rng][neuron][2,:]), (xaxis, yaxis))
                 end
                 
                 for k_beh in keys(analysis_dict["neuron_categorization"][dataset][rng])
@@ -386,9 +467,9 @@ function compute_umap_subcategories!(fit_results, analysis_dict, datasets; datas
                     end
                 end
 
-                for idx = 1:size(analysis_dict["umap_extrap_all$(suffix)"][dataset][rng][neuron],2)
-                    loc_x = Int((analysis_dict["umap_extrap_all$(suffix)"][dataset][rng][neuron][1,idx] - xmin) ÷ xstep + 1)
-                    loc_y = Int((analysis_dict["umap_extrap_all$(suffix)"][dataset][rng][neuron][2,idx] - ymin) ÷ ystep + 1)
+                for idx = 1:size(umap_dict["umap_extrap_all$(suffix)"][dataset][rng][neuron],2)
+                    loc_x = Int((umap_dict["umap_extrap_all$(suffix)"][dataset][rng][neuron][1,idx] - xmin) ÷ xstep + 1)
+                    loc_y = Int((umap_dict["umap_extrap_all$(suffix)"][dataset][rng][neuron][2,idx] - ymin) ÷ ystep + 1)
                     ewma_val = Int(min(ewma_max, fit_results[dataset]["sampled_tau_vals"][rng, neuron, idx]) ÷ ewma_step) + 1
                     hist_weights_ewma[ewma_val, loc_x, loc_y] += 1
                 end 
@@ -398,126 +479,10 @@ function compute_umap_subcategories!(fit_results, analysis_dict, datasets; datas
         end    
     end
     
-    analysis_dict["umap_hist_weights$(suffix)"] = hist_weights
-    analysis_dict["umap_hist_weights_cats$(suffix)"] = hist_weights_cats
-    analysis_dict["umap_hist_weights_subcats$(suffix)"] = hist_weights_subcats
-    analysis_dict["umap_hist_weights_ewma$(suffix)"] = hist_weights_ewma;
+    umap_dict["umap_hist_weights$(suffix)"] = hist_weights
+    umap_dict["umap_hist_weights_cats$(suffix)"] = hist_weights_cats
+    umap_dict["umap_hist_weights_subcats$(suffix)"] = hist_weights_subcats
+    umap_dict["umap_hist_weights_ewma$(suffix)"] = hist_weights_ewma;
 
-    if use_median
-        print("Using median; skipping encoding change projection.")
-        return nothing
-    end
-    
-    analysis_dict["enc_change_stats_baseline"] = Dict()    
-    analysis_dict["enc_change_stats_heatstim"] = Dict()
-    analysis_dict["enc_change_stats_baseline_dataset"] = Dict()    
-    analysis_dict["enc_change_stats_heatstim_dataset"] = Dict()
-    hist_weights_cats_ec["baseline"] = Dict()
-    hist_weights_cats_ec["heatstim"] = Dict()
-    
-    @showprogress for dataset = datasets
-        if !(dataset in keys(analysis_dict["encoding_changing_neurons_msecorrect_mh"]))
-            @warn("Could not find $dataset in encoding_changing_neurons_msecorrect_mh")
-            continue
-        end
-        dict_stats = nothing
-        dict_stats_dataset = nothing
-        hist_weights_dict = nothing
-        if dataset in datasets_baseline_1600
-            dict_stats = analysis_dict["enc_change_stats_baseline"]
-            dict_stats_dataset = analysis_dict["enc_change_stats_baseline_dataset"]
-            hist_weights_dict = hist_weights_cats_ec["baseline"]
-        elseif dataset in datasets_stim_all
-            dict_stats = analysis_dict["enc_change_stats_heatstim"]
-            dict_stats_dataset = analysis_dict["enc_change_stats_heatstim_dataset"]
-            hist_weights_dict = hist_weights_cats_ec["heatstim"]
-        end
-        hist_weights_cats_ec[dataset] = Dict()
-        if !isnothing(dict_stats_dataset)
-            dict_stats_dataset[dataset] = Dict()
-        end
-        for rngs = keys(analysis_dict["encoding_changing_neurons_msecorrect_mh"][dataset])
-            if !isnothing(dict_stats) && !(rngs in keys(dict_stats))
-                dict_stats[rngs] = Dict()
-                hist_weights_dict[rngs] = Dict()
-            end
-            hist_weights_cats_ec[dataset][rngs] = Dict()
-            if !isnothing(dict_stats_dataset)
-                dict_stats_dataset[dataset][rngs] = Dict()
-            end
-            for cat = keys(analysis_dict["encoding_changes"][dataset][rngs])
-                hist_weights_cats_ec[dataset][rngs][cat] = Dict()
-                if typeof(analysis_dict["encoding_changes"][dataset][rngs][cat]) <: Dict
-                    if !isnothing(dict_stats_dataset)
-                        dict_stats_dataset[dataset][rngs][cat] = Dict()
-                    end
-                    for subcat = keys(analysis_dict["encoding_changes"][dataset][rngs][cat])
-                        
-                        hist_weights_cats_ec[dataset][rngs][cat][subcat] = Dict()
-                        if !isnothing(dict_stats_dataset)
-                            dict_stats_dataset[dataset][rngs][cat][subcat] = 0
-                        end
-                        if !isnothing(dict_stats) && !(cat in keys(dict_stats[rngs]))
-                            dict_stats[rngs][cat] = Dict()
-                            hist_weights_dict[rngs][cat] = Dict()
-                        end
-                        if !isnothing(dict_stats) && !(subcat in keys(dict_stats[rngs][cat]))
-                            dict_stats[rngs][cat][subcat] = 0
-                            hist_weights_dict[rngs][cat][subcat] = Dict()
-                        end
-                        for rng = 1:length(fit_results[dataset]["ranges"])                            
-                            if !isnothing(hist_weights_dict) && !(rng in keys(hist_weights_dict[rngs][cat][subcat]))
-                                hist_weights_dict[rngs][cat][subcat][rng] = zeros(length(xaxis)-1, length(yaxis)-1)
-                            end
-                            hist_weights_cats_ec[dataset][rngs][cat][subcat][rng] = zeros(length(xaxis)-1, length(yaxis)-1)
-                            for neuron = analysis_dict["encoding_changes"][dataset][rngs][cat][subcat]
-                                if !(neuron in analysis_dict["encoding_changing_neurons_msecorrect_mh"][dataset][rngs]["neurons"])
-                                    continue
-                                end
-                                hist_fit = fit(Histogram, (analysis_dict["umap_extrap_all$(suffix)"][dataset][rng][neuron][1,:], analysis_dict["umap_extrap_all$(suffix)"][dataset][rng][neuron][2,:]), (xaxis, yaxis))
-                                hist_weights_cats_ec[dataset][rngs][cat][subcat][rng] .+= hist_fit.weights
-                                if !isnothing(hist_weights_dict)
-                                    hist_weights_dict[rngs][cat][subcat][rng] .+= hist_fit.weights
-                                end
-                                if !isnothing(dict_stats) && rng == 1
-                                    dict_stats[rngs][cat][subcat] += 1
-                                    dict_stats_dataset[dataset][rngs][cat][subcat] += 1
-                                end
-                            end
-                        end
-                    end
-                else
-                    if !isnothing(dict_stats_dataset)
-                        dict_stats_dataset[dataset][rngs][cat] = 0
-                    end
-                    if !isnothing(dict_stats) && !(cat in keys(dict_stats[rngs]))
-                        dict_stats[rngs][cat] = 0
-                        hist_weights_dict[rngs][cat] = Dict()
-                    end
-                    for rng = 1:length(fit_results[dataset]["ranges"])
-                        if !isnothing(hist_weights_dict) && !(rng in keys(hist_weights_dict[rngs][cat]))
-                            hist_weights_dict[rngs][cat][rng] = zeros(length(xaxis)-1, length(yaxis)-1)
-                        end
-                        hist_weights_cats_ec[dataset][rngs][cat][rng] = zeros(length(xaxis)-1, length(yaxis)-1)
-                        for neuron = analysis_dict["encoding_changes"][dataset][rngs][cat]
-                            if !(neuron in analysis_dict["encoding_changing_neurons_msecorrect_mh"][dataset][rngs]["neurons"])
-                                continue
-                            end
-                            hist_fit = fit(Histogram, (analysis_dict["umap_extrap_all$(suffix)"][dataset][rng][neuron][1,:], analysis_dict["umap_extrap_all$(suffix)"][dataset][rng][neuron][2,:]), (xaxis, yaxis))
-                            hist_weights_cats_ec[dataset][rngs][cat][rng] .+= hist_fit.weights
-                            if !isnothing(hist_weights_dict)
-                                hist_weights_dict[rngs][cat][rng] .+= hist_fit.weights
-                            end
-                            if !isnothing(dict_stats) && rng == 1
-                                dict_stats[rngs][cat] += 1
-                                dict_stats_dataset[dataset][rngs][cat] += 1
-                            end
-                        end
-                    end
-                end
-            end
-        end
-    end
-    analysis_dict["umap_hist_weights_cats_ec$(suffix)"] = hist_weights_cats_ec
     return nothing
 end

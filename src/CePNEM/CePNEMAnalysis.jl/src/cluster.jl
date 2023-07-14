@@ -14,7 +14,27 @@ function cluster_dist(clusters)
     return distances
 end
 
-function dendrocolor(dg, clusters, colors; progenitors=nothing, k=nothing)
+"""
+    dendrocolor!(dg, clusters, colors; progenitors=nothing, k=nothing)
+
+Color the dendrogram `dg` according to the cluster assignments in `clusters`. 
+The `colors` argument should be a vector of colors, one for each cluster. 
+The `progenitors` argument can be a vector of indices of the progenitor nodes to use for coloring.
+Alternatively, the `k` argument can be an integer specifying the number of clusters to use for coloring.
+
+# Arguments
+- `dg`: A `StatsPlots` dendrogram of a hierarchical clustering result.
+- `clusters`: The clusters being plotted in the dendrogram.
+- `colors::Vector{Color}`: The colors to use for coloring.
+- `progenitors::Vector{Int} = nothing`: The indices of the progenitor nodes to use for coloring.
+- `k::Int = nothing`: The number of clusters to use for coloring.
+
+# Returns
+- `node_assignments::Dict{Int,Int}`: A dictionary mapping node indices to cluster assignments.
+
+Also in-place modifies the plot object `dg` to color it correctly.
+"""
+function dendrocolor!(dg, clusters, colors; progenitors=nothing, k=nothing)
     @assert(!(isnothing(progenitors) && isnothing(k)), "Must specify either progenitor or k coloring.")
     n = length(clusters.order)
     

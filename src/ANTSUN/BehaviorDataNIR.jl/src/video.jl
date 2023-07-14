@@ -1,5 +1,6 @@
 """
     write_behavior_video(path_h5, path_vid=nothing; fps=20, encoder_options=nothing, downsample=true)
+
 Writes a video of the behavior data
 Arguments
 ---------
@@ -56,6 +57,25 @@ function write_behavior_video(path_h5, path_vid=nothing; fps=20, encoder_options
     end #h5open
 end
 
+"""
+    add_text_to_image(img, text_arr, position, colors, fs, font, spacing)
+
+Adds text to an image.
+
+Arguments
+---------
+* `img`: image to which text is to be added
+* `text_arr`: array of strings containing the text to be added
+* `position`: position of the text in the image
+* `colors`: array of colors for each text string
+* `fs`: font size
+* `font`: font face
+* `spacing`: vertical spacing between text strings
+
+Returns
+-------
+* `new_img`: image with text added
+"""
 function add_text_to_image(img, text_arr, position, colors, fs, font, spacing)
     len, wid = size(img)
     word_img = zeros(ARGB32,len,wid)
@@ -105,7 +125,16 @@ function ds(img)
             img[1:2:end-1,2:2:end] .+ img[2:2:end,1:2:end-1]) ./ 4)
 end
 
+"""
+    encode_movie(input, output; fps=30)
 
+Encodes a movie from a sequence of images using ffmpeg.
+
+# Arguments:
+- `input`: Path to the input images
+- `output`: Path to the output video
+- `fps` (default 30): frames per second
+"""
 function encode_movie(input, output; fps=30)
     run(`ffmpeg -hide_banner -loglevel panic -y -framerate $fps -i $input -c:v libx264 -pix_fmt yuv420p -preset slow -b:v 16M $output`)
     nothing
@@ -113,6 +142,8 @@ end;
 
 
 """
+    write_mip_video(param_path, num_timepts, ch, path_vid=nothing; fps=20, encoder_options=nothing)
+
 Writes maximum-intensity projection video of MHD data.
 
 # Arguments:

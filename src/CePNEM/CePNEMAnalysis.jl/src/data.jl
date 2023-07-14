@@ -1,5 +1,10 @@
 """
-Loads Gen output data.
+    load_CePNEM_output(
+        datasets::Vector{String}, fit_ranges::Dict, path_output, path_h5, n_params, 
+        n_particles, n_samples, is_mcmc; load_posterior::Bool=true
+    )
+
+Loads CePNEM output data.
 
 # Arguments:
 - `datasets::Vector{String}`: Datasets to load
@@ -10,8 +15,10 @@ Loads Gen output data.
 - `n_particles`: Number of particles in the Gen fit
 - `n_samples`: Number of samples from the posterior given by the Gen fit
 - `is_mcmc`: Whether fits are done via MCMC (as opposed to SMC)
+- `load_posterior` (optional, default `true`): Whether to load the posterior samples. If `false`, only the fit ranges and traces are loaded.
 """
-function load_CePNEM_output(datasets::Vector{String}, fit_ranges::Dict, path_output, path_h5, n_params, n_particles, n_samples, is_mcmc)
+function load_CePNEM_output(datasets::Vector{String}, fit_ranges::Dict, path_output, path_h5, 
+        n_params, n_particles, n_samples, is_mcmc; load_posterior::Bool=true)
     fit_results = Dict()
     incomplete_datasets = Dict()
 
@@ -48,6 +55,10 @@ function load_CePNEM_output(datasets::Vector{String}, fit_ranges::Dict, path_out
             fit_results[dataset]["avg_timestep"] = mean(diff(list_t_confocal[1:n_t]))
         end
 
+        if !load_posterior
+            continue
+        end
+
         incomplete_datasets[dataset] = zeros(Bool, length(ranges), n_neurons)
         for (i,rng)=enumerate(ranges)
             for neuron = 1:n_neurons
@@ -73,6 +84,8 @@ function load_CePNEM_output(datasets::Vector{String}, fit_ranges::Dict, path_out
 end
 
 """
+    get_pumping_ranges(datasets::Vector{String}, P_ranges::Dict; rngs_valid::Vector{Int}=[1,2])
+
 Computes time ranges with the most pumping variance for each dataset.
 
 # Arguments:
@@ -89,6 +102,8 @@ function get_pumping_ranges(datasets::Vector{String}, P_ranges::Dict; rngs_valid
 end
 
 """
+    add_to_analysis_dict!(analysis_dict::Dict, new_dict::Dict, key::String)
+
 Adds a dictionary of new results to an existing analysis dictionary.
 
 # Arguments:
@@ -106,6 +121,8 @@ function add_to_analysis_dict!(analysis_dict::Dict, new_dict::Dict, key::String)
 end
 
 """
+    compute_signal(fit_results::Dict)
+
 Computes signal value for each neuron in each dataset.
 
 # Arguments:
@@ -124,6 +141,11 @@ function compute_signal(fit_results::Dict)
 end
 
 """
+    neuropal_data_to_dict(
+        fit_results::Dict, analysis_dict::Dict, 
+        list_class::Vector, list_match_dict::Vector, datasets_neuropal::Vector{String}
+    )
+
 Computes match and encoding-change match dictionaries for NeuroPAL data.
 
 # Arguments:
@@ -133,7 +155,8 @@ Computes match and encoding-change match dictionaries for NeuroPAL data.
 - `list_match_dict::Vector{Any}`: List of dictionaries of matches for each class.
 - `datasets_neuropal::Vector{String}`: List of datasets to match.
 """
-function neuropal_data_to_dict(fit_results::Dict, analysis_dict::Dict, list_class::Vector, list_match_dict::Vector, datasets_neuropal::Vector{String})
+function neuropal_data_to_dict(fit_results::Dict, analysis_dict::Dict, 
+        list_class::Vector, list_match_dict::Vector, datasets_neuropal::Vector{String})
     matches = Dict()
     matches_ec = Dict()
     @showprogress for dataset = datasets_neuropal
@@ -145,7 +168,7 @@ function neuropal_data_to_dict(fit_results::Dict, analysis_dict::Dict, list_clas
             for rng1 in 1:length(fit_results[dataset]["ranges"])-1
                 for rng2 in rng1+1:length(fit_results[dataset]["ranges"])
                     rng = (rng1, rng2)
-                    append!(list_ec, analysis_dict["encoding_changing_neurons_msecorrect_mh"][dataset][rng]["neurons"])
+                    append!(list_ec, analysis_dict["encoding_changes_corrected"][dataset][rng]["all"])
                 end
             end
         end
@@ -175,16 +198,26 @@ function neuropal_data_to_dict(fit_results::Dict, analysis_dict::Dict, list_clas
 end
 
 """
+    export_to_json(
+        fit_results::Dict, analysis_dict::Dict, relative_encoding_strength::Dict, 
+        datasets::Vector{String}, path_output::String, path_h5::String, list_uid_neuropal::Vector{String}
+    )
+
 Exports CePNEM analysis results to JSON file for use on the website.
 
 # Arguments:
 - `fit_results::Dict`: Dictionary of CePNEM fit results.
 - `analysis_dict::Dict`: Dictionary of CePNEM analysis results.
+- `relative_encoding_strength::Dict`: Dictionary of relative encoding strength values for each neuron.
 - `datasets::Vector{String}`: List of datasets to export.
 - `path_output::String`: Name of JSON file to export to.
 - `path_h5::String`: Path to HDF5 directory containing raw data.
+- `list_uid_neuropal::Vector{String}`: List of all NeuroPAL datasets, in the order they are computed in `list_match_dict`.
+- `list_match_dict`: List of dictionaries of NeuroPAL data.
 """
-function export_to_json(fit_results::Dict, analysis_dict::Dict, datasets::Vector{String}, path_output::String, path_h5::String)
+function export_to_json(fit_results::Dict, analysis_dict::Dict, relative_encoding_strength::Dict, 
+        datasets::Vector{String}, path_output::String, path_h5::String, list_uid_neuropal::Vector{String},
+        list_match_dict)
     dict_summary = OrderedDict()    
     @showprogress for dataset = datasets
         if !(dataset in keys(analysis_dict["neuron_categorization"]))
@@ -227,9 +260,9 @@ function export_to_json(fit_results::Dict, analysis_dict::Dict, datasets::Vector
             end
             if length(ranges_encoding) > 0
                 dict_dataset["tau_vals"][neuron] = median(fit_results[dataset]["sampled_tau_vals"][ranges_encoding, neuron, :])
-                dict_dataset["rel_enc_str_v"][neuron] = median(hcat([analysis_dict["relative_encoding_strength"][dataset][rng][neuron]["v"] for rng=ranges_encoding]...))
-                dict_dataset["rel_enc_str_θh"][neuron] = median(hcat([analysis_dict["relative_encoding_strength"][dataset][rng][neuron]["θh"] for rng=ranges_encoding]...))
-                dict_dataset["rel_enc_str_P"][neuron] = median(hcat([analysis_dict["relative_encoding_strength"][dataset][rng][neuron]["P"] for rng=ranges_encoding]...))                
+                dict_dataset["rel_enc_str_v"][neuron] = median(hcat([relative_encoding_strength[dataset][rng][neuron]["v"] for rng=ranges_encoding]...))
+                dict_dataset["rel_enc_str_θh"][neuron] = median(hcat([relative_encoding_strength[dataset][rng][neuron]["θh"] for rng=ranges_encoding]...))
+                dict_dataset["rel_enc_str_P"][neuron] = median(hcat([relative_encoding_strength[dataset][rng][neuron]["P"] for rng=ranges_encoding]...))                
             end
             if length(ranges_encoding_v) > 0
                 dict_dataset["forwardness"][neuron] = median([get_forwardness(analysis_dict["tuning_strength"][dataset][rng][neuron]) for rng=ranges_encoding_v])
@@ -273,8 +306,8 @@ function export_to_json(fit_results::Dict, analysis_dict::Dict, datasets::Vector
 
         dict_dataset["dataset_type"] = dict_summary[dataset]["dataset_type"]
 
-        if dataset in datasets_neuropal
-            idx_uid = findall(x->x==dataset, list_uid)[1]
+        if dataset in list_uid_neuropal # TODO: Replace this with a Dictionary
+            idx_uid = findall(x->x==dataset, list_uid_neuropal)[1]
             dict_summary[dataset]["num_labeled"] = length(list_match_dict[idx_uid][1])
             dict_dataset["labeled"] = list_match_dict[idx_uid][1]
         else
@@ -284,7 +317,11 @@ function export_to_json(fit_results::Dict, analysis_dict::Dict, datasets::Vector
         
         path_data_ = joinpath(path_h5_data, "$(dataset)-data.h5")
         data_dict = import_data(path_data_, custom_keys=["behavior/reversal_events"])
-        dict_dataset["reversal_events"] = data_dict["behavior/reversal_events"]'
+        dict_dataset["reversal_events"] = data_dict["behavior/reversal_events"]
+        dict_dataset["timestamp_confocal"] = data_dict["timestamp_confocal"]
+        dict_dataset["trace_original"] = data_dict["trace_original"]
+        dict_dataset["trace_array_F20"] = data_dict["trace_array_F20"]
+
         if haskey(data_dict, "stim_begin_confocal")
             stim = Int(data_dict["stim_begin_confocal"][1])
             dict_dataset["events"] = Dict("heat"=>[stim])
@@ -311,29 +348,29 @@ function export_to_json(fit_results::Dict, analysis_dict::Dict, datasets::Vector
             write(f, JSON.json(ordered_matches))
         end
         
-        f = h5open(path_h5_enc)
+        ## TODO: Fix this
+        # f = h5open(path_h5_enc)
         
-        dict_enc_table = Dict()
+        # dict_enc_table = Dict()
         
-        dict_enc_table["encoding_table"] = transpose(f["encoding_table"][:,:])
-        for k = ["class", "count", "enc_v", "enc_strength_v", "enc_hc",
-                "enc_strength_hc", "enc_pumping", "enc_strength_pumping", "tau"]
-            try
-                dict_enc_table[k] = f[k][:,1]
-            catch e
-                dict_enc_table[k] = f[k][:]
-            end
-        end
+        # dict_enc_table["encoding_table"] = transpose(f["encoding_table"][:,:])
+        # for k = ["class", "count", "enc_v", "enc_strength_v", "enc_hc",
+        #         "enc_strength_hc", "enc_pumping", "enc_strength_pumping", "tau"]
+        #     try
+        #         dict_enc_table[k] = f[k][:,1]
+        #     catch e
+        #         dict_enc_table[k] = f[k][:]
+        #     end
+        # end
         
-        dict_enc_table["encoding_change_abundance"] = 
-            [(n in keys(analysis_dict["encoding_change_abundance"]) ? analysis_dict["encoding_change_abundance"][n] : 0)
-            for n in dict_enc_table["class"]]
+        # dict_enc_table["encoding_change_abundance"] = 
+        #     [(n in keys(analysis_dict["encoding_change_abundance"]) ? analysis_dict["encoding_change_abundance"][n] : 0)
+        #     for n in dict_enc_table["class"]]
         
-        open(joinpath(path_output, "encoding_table.json"), "w") do g
-            write(g, JSON.json(dict_enc_table))
-        end
+        # open(joinpath(path_output, "encoding_table.json"), "w") do g
+        #     write(g, JSON.json(dict_enc_table))
+        # end
         
-        close(f)
+        # close(f)
     end
 end
-

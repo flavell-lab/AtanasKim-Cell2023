@@ -242,6 +242,8 @@ function signal_stack_repeatability(signal, timing_stack; sampling_rate=5000)
 end
 
 """
+    nir_vec_to_confocal(vec, confocal_to_nir, confocal_len)
+
 Bins NIR behavioral data to match the confocal time points.
 
 # Arguments:
@@ -264,6 +266,8 @@ function nir_vec_to_confocal(vec, confocal_to_nir, confocal_len)
 end
 
 """
+    unlag_vec(vec, lag)
+
 Shifts a lagged vector `vec` to correct for the lag amount `lag`.
 """
 function unlag_vec(vec, lag)
@@ -282,6 +286,8 @@ function unlag_vec(vec, lag)
 end
 
 """
+    nir_to_confocal_t(t, nir_to_confocal)
+
 Converts NIR time point `t` to confocal time point using `nir_to_confocal` timesync variable.
 """
 function nir_to_confocal_t(t, nir_to_confocal)
@@ -294,6 +300,8 @@ function nir_to_confocal_t(t, nir_to_confocal)
 end
 
 """
+    get_timestamps(path_h5)
+
 Gets NIR timestamps from the NIR data file
 """
 function get_timestamps(path_h5)
@@ -305,6 +313,8 @@ function get_timestamps(path_h5)
 end
 
 """
+    get_timing_info!(data_dict::Dict, param::Dict, path_h5::String, h5_confocal_time_lag::Integer)
+
 Initializes all timing and syncing variables into `data_dict::Dict` given `param::Dict`, `path_h5::String` and the `h5_confocal_time_lag::Integer`
 """
 function get_timing_info!(data_dict::Dict, param::Dict, path_h5::String, h5_confocal_time_lag::Integer)
@@ -347,6 +357,8 @@ function get_timing_info!(data_dict::Dict, param::Dict, path_h5::String, h5_conf
 end
 
 """
+    fill_timeskip(traces, timestamps; min_timeskip_length=5, timeskip_step=1, fill_val=0)
+
 Fills in timeskips with multiple 0 datapoints for easier visualization.
 
 # Arguments:
@@ -390,6 +402,8 @@ function fill_timeskip_behavior(behavior, timestamps; min_timeskip_length=5, tim
 end
 
 """
+    pre_confocal_timesteps(data_dict::Dict, param::Dict)
+
 Computes confocal timesteps backwards in time from the beginning of the confocal recording.
 """
 function pre_confocal_timesteps(data_dict::Dict, param::Dict)

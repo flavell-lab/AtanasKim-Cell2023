@@ -1,4 +1,6 @@
 """
+    update_cmap!(cmap, x, y)
+
 Updates choice map `cmap` to contain parameters `x` and/or neural data `y`.
 """
 function update_cmap!(cmap, x, y)
@@ -22,6 +24,8 @@ function update_cmap!(cmap, x, y)
 end
 
 """
+    evaluate_pdf_xgiveny!(x, y_cmap, args, log_ml_est)
+
 Given parameters `x` (given as an array of the 9 parameters for `nl8`), observed data `y_cmap`
 (neural data, given as a `choicemap)`, `args` (behavioral data),
 and `log_ml_est` from a Gen inference run on `y, args`, computes `P(x | y, args)` under model `nl8`.
@@ -33,6 +37,8 @@ function evaluate_pdf_xgiveny!(x, y_cmap, args, log_ml_est)
 end
 
 """
+    compute_dists(dataset1, rng_idx_1, neuron1, dataset2, rng_idx_2, neuron2, fit_results, params_fix, param_noise=9)
+
 Computes the distributions given by `P(x | y1)` and `P(x | y2)`, where `y1` is given by
 `dataset1`, `rng_idx_1`, and `neuron1`, and `y2` is given by `dataset2`, `rng_idx_2`, and `neuron2`.
 Uses `Gen` fits stored in `fit_results`, and fixes parameters in `param_fix` to the MLE when doing cross-dataset comparison.
@@ -103,6 +109,8 @@ function compute_dists(dataset1, rng_idx_1, neuron1, dataset2, rng_idx_2, neuron
 end
 
 """
+    kl_div(p, q)
+
 Computes KL divergence between two distributions (entered as samples) `p` and `q`
 """
 function kl_div(p, q)
@@ -112,6 +120,8 @@ function kl_div(p, q)
 end
 
 """
+    overlap_index(p,q)
+
 Computes overlap index between two distributions (entered as samples) `p` and `q`
 """
 function overlap_index(p,q)
@@ -122,6 +132,8 @@ function overlap_index(p,q)
 end
 
 """
+    prob_P_greater_Q(P,Q)
+
 Computes `Prob(p>q) + Prob(p=q)/2` for `p~P`, `q~Q`
 Here `P` and `Q` are arrays of samples.
 """
@@ -188,6 +200,8 @@ function prob_P_greater_Q(P,Q)
 end
 
 """
+    compute_AND(p1, p2)
+
 Given `p`-values `p1` and `p2` for different events, computes the `p`-value for the AND of those events.
 """
 function compute_AND(p1, p2)
@@ -195,6 +209,8 @@ function compute_AND(p1, p2)
 end
 
 """
+    project_posterior(sampled_trace_params::Array, params_rm::Array{Int}; percentile_thresh::Real=1)
+
 Projects the posterior distribution into a subspace missing some parameters.
 
 # Arguments:

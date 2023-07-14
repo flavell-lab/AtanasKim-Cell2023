@@ -1,7 +1,7 @@
 module HierarchicalPosteriorModel
 
 using Distributions, Optim, Statistics, StatsBase, LinearAlgebra, ForwardDiff,
-    CePNEM
+    CePNEM, SpecialFunctions
 
 include("model.jl")
 include("util.jl")

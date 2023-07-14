@@ -474,7 +474,7 @@ Compute the Cartesian average of the given hierarchical Bayesian parameters.
 - `ps_tot::Vector{Float64}`: The Cartesian average of the given hierarchical Bayesian parameters.
 """
 function compute_cartesian_average(hbparams::HBParams)
-    ps = zeros(length(hbdatasets), 8)
+    ps = zeros(length(hbparams.x), 8)
 
     for i in 1:length(hbparams.x)
         ps[i,:] .= convert_hbparams_to_ps(hbparams.x[i])

@@ -1,5 +1,5 @@
 """
-struct HBParams
+    struct HBParams
 
 A structure for holding the mean (mu), standard deviation (sigma), and the spherical coordinates (x) of a model.
 

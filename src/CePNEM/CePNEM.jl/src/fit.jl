@@ -160,6 +160,26 @@ function hmc_jump_update(tr, μ_vT, σ_vT, model; max_t=nothing)
     return tr
 end
 
+"""
+    run_mcmc_10(ys, v, θh, P; n_init=100000, n_iters=11000, lr_adjust=1.1, model=:nl10d)
+
+Run MCMC chain for fitting the CePNEM model to the data.
+
+Arguments:
+- `ys`: Vector of observed neural activity (GCaMP) data.
+- `v`: Vector of observed worm velocity data.
+- `θh`: Vector of observed worm head curvature data.
+- `P`: Vector of observed worm pumping (feeding) data.
+- `n_init`: Number of iterations for the initialization phase of the MCMC chain.
+- `n_iters`: Number of iterations for the MCMC chain.
+- `lr_adjust`: Learning rate adjustment factor.
+- `model`: Model to use for the MCMC chain. Can be either `:nl10c` or `:nl10d`. It is recommended to use `:nl10d`.
+
+Returns:
+- `traces_fit`: Vector of traces (ie: fit model parameters) for the MCMC chain.
+- `accept`: Matrix of acceptance rates for the MCMC chain.
+- `δ_vals`: Vector of step sizes for the MCMC chain.
+"""
 function run_mcmc_10(ys, v, θh, P; n_init=100000, n_iters=11000, lr_adjust=1.1, model=:nl10d)
     @assert(model in [:nl10c, :nl10d])
     n_params = (model == :nl10c) ? 11 : 10
@@ -214,6 +234,18 @@ function run_mcmc_10(ys, v, θh, P; n_init=100000, n_iters=11000, lr_adjust=1.1,
 end
 
 nl10c_traces_to_params = traces_fit -> mapreduce(permutedims, vcat, get_free_params.(traces_fit[BURNIN+1:end], :nl10c))
+
+"""
+    nl10d_traces_to_params(traces_fit)
+
+Extracts the free parameters from the traces of the MCMC chain for the nl10d model.
+
+Arguments:
+- `traces_fit`: Vector of traces (ie: fit model parameters) for the MCMC chain.
+
+Returns:
+- A vector of the free parameters extracted from the traces of the MCMC chain for the nl10d model.
+"""
 nl10d_traces_to_params = traces_fit -> mapreduce(permutedims, vcat, get_free_params.(traces_fit[BURNIN+1:end], :nl10d))
 
 function particle_filter_incremental(num_particles::Int, v::Vector{Float64}, θh::Vector{Float64}, P::Vector{Float64},

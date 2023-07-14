@@ -6,7 +6,6 @@ recenter_angle
 local_recenter_angle
 vec_to_angle
 make_vec
-ang_btw_vec
 ```
 
 ## Other utilities
@@ -14,5 +13,4 @@ ang_btw_vec
 impute_list
 get_lsqerr
 savitzky_golay_filter
-euclidean_dist
 ```

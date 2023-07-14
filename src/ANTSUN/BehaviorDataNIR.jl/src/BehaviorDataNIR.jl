@@ -87,5 +87,6 @@ export
     # video.jl,
     encode_movie,
     write_behavior_video,
-    add_text_to_image
+    add_text_to_image,
+    write_mip_video
 end # module

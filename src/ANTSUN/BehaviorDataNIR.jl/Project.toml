@@ -1,7 +1,7 @@
 name = "BehaviorDataNIR"
 uuid = "3f411c05-961e-46d9-b20c-1ef355bc3583"
 authors = ["Jungsoo Kim <jungsu93@gmail.com>", "Adam Atanas <aaatanas@mit.edu>"]
-version = "0.2.3"
+version = "1.0.0"
 
 [deps]
 Combinatorics = "861a8166-3701-5b0c-9a16-15d98fcdc6aa"

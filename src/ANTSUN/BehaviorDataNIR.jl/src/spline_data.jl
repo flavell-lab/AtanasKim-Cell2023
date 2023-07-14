@@ -1,4 +1,6 @@
 """
+    get_worm_vector(x_array, y_array, segment_end_matrix, seg_range)
+
 Gets the vector the worm is facing, in the lab `xy`-coordinate system.
 
 # Arguments:
@@ -19,6 +21,8 @@ function get_worm_vector(x_array, y_array, segment_end_matrix, seg_range)
 end
 
 """
+    get_worm_body_angle(x_array, y_array, segment_end_matrix, pts)
+
 Gets the body angle of a worm between the given points in the spline.
 
 # Arguments:
@@ -41,6 +45,8 @@ function get_worm_body_angle(x_array, y_array, segment_end_matrix, pts)
 end
 
 """
+    get_tot_worm_curvature(body_angle, min_len; directional::Bool=false)
+
 Computes total worm curvature
 
 # Arguments:
@@ -68,7 +74,10 @@ end
 
 
 
-""" Gets the smallest ratio between distance between two points in space and distance between them along the worm's curvature.
+""" 
+    nose_curling(spline_x, spline_y, segment_end; max_i=1)
+
+Gets the smallest ratio between distance between two points in space and distance between them along the worm's curvature.
 A value of 0 means that the worm is intersecting itself, while a value of 1 means the worm is a straight line.
 
 # Arguments:

@@ -1,7 +1,7 @@
 name = "CePNEM"
 uuid = "e5213632-2d12-443e-a840-e9f463057f13"
 authors = ["Adam Atanas <adamatanas@gmail.com>"]
-version = "0.3.0"
+version = "1.0.0"
 
 [deps]
 Distributions = "31c24e10-a181-5473-b8eb-7969acd0382f"

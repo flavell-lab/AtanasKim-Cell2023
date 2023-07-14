@@ -1,7 +1,7 @@
 name = "CaAnalysis"
 uuid = "947cb7f0-8959-11e9-3494-21039d60b1bb"
 authors = ["Jungsoo Kim <jungsoo@mit.edu>", "Adam Atanas <aaatanas@mit.edu>"]
-version = "0.3.4"
+version = "1.0.0"
 
 [deps]
 Clustering = "aaaa29a8-35af-508c-8bc3-b662a17a0fe5"

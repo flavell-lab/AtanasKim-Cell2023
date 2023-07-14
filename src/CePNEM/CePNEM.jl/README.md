@@ -1,19 +1,38 @@
 # CePNEM.jl
-Model of neural encoding of behavior, together with `Gen.jl` tools to fit it.
+
+[![][docs-stable-img]][docs-stable-url] [![][docs-latest-img]][docs-latest-url]
+
+[docs-stable-img]: https://img.shields.io/badge/docs-stable-blue.svg
+[docs-stable-url]: https://flavell-lab.github.io/CePNEM.jl/stable/
+
+[docs-latest-img]: https://img.shields.io/badge/docs-latest-blue.svg
+[docs-latest-url]: https://flavell-lab.github.io/CePNEM.jl/dev/ 
+
+The *C. elegans* Probabilistic Neural Encoding Model, together with `Gen.jl` tools to fit it.
+
+## Citation
+
+Brain-wide representations of behavior spanning multiple timescales and states in *C. elegans*
+
+Adam A. Atanas*, Jungsoo Kim*, Ziyu Wang, Eric Bueno, McCoy Becker, Di Kang, Jungyeon Park, Cassi Estrem, Talya S. Kramer, Saba Baskoylu, Vikash K. Mansinghka, Steven W. Flavell
+
+bioRxiv 2022.11.11.516186; doi: https://doi.org/10.1101/2022.11.11.516186
+
+\* equal contribution
 
 ## Usage  
 Here's an example to fit the latest model (`nl10d`).
 
 Example only: the data loading parts are examples and should be modified for actual computation.
 ```julia
-using Gen, Statistics, StatsBase, HDF5, FlavellBase, EncoderModelGen, ANTSUNData
+using Gen, Statistics, StatsBase, HDF5, FlavellBase, CePNEM, ANTSUNData
+Gen.@load_generated_functions
 
-rg_t = 401:800 # time point index to fit
+rg_t = 1:800 # time point index to fit
 n_obs = length(rg_t)
 
 # load trace and behavior
-trace = load_trace() # load neural trace
-ys = trace[rg_t]
+ys = trace[rg_t] # neural trace
 
 v = velocity[rg_t]
 θh = θh[rg_t]

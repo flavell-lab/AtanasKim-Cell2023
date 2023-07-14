@@ -1,7 +1,10 @@
 VALID_V_COMPARISONS = [(1,2), (2,1), (3,4), (4,3)]
 
 """
+    deconvolved_model_nl8(params::Vector{Float64}, v::Float64, θh::Float64, P::Float64)
+
 Evaluate model NL8, deconvolved, given `params` and `v`, `θh`, and `P`. Does not use the sigmoid.
+Expression is equivalent to evaluating NL10d since this function does not include the residual model.
 """
 function deconvolved_model_nl8(params::Vector{Float64}, v::Float64, θh::Float64, P::Float64)
     return ((params[1]+1)/sqrt(params[1]^2+1) - 2*params[1]/sqrt(params[1]^2+1)*(v/v_STD < 0)) * (
@@ -9,6 +12,8 @@ function deconvolved_model_nl8(params::Vector{Float64}, v::Float64, θh::Float64
 end
 
 """
+    compute_range(beh::Vector{Float64}, beh_percent::Real, beh_idx::Int)
+
 Computes the valid range of a behavior `beh` (eg: velocity cropped to a given time range).
 Computes percentile based on `beh_percent`, and uses 4 points instead of 2 for velocity (`beh_idx = 1`)
 """
@@ -30,6 +35,8 @@ function compute_range(beh::Vector{Float64}, beh_percent::Real, beh_idx::Int)
 end
 
 """
+    get_deconvolved_activity(sampled_trace_params, v_rng, θh_rng, P_rng)
+
 Computes deconvolved activity of model NL8 for each sampled parameter in `sampled_trace_params`,
 at a lattice defined by `v_rng`, `θh_rng`, and `P_rng`.
 """
@@ -51,6 +58,8 @@ end
 
 
 """
+    make_deconvolved_lattice(fit_results, beh_percent, plot_thresh; dataset_mapping=nothing)
+
 Makes deconvolved lattices for each dataset, time range, and neuron in `fit_results`.
 Returns velocity, head angle, and pumping ranges, and the deconvolved activity of each neuron at each lattice point defined by them,
 for both statistically useful ranges (first return value), and full ranges (second return value) designed for plotting consistency.
@@ -120,6 +129,11 @@ end
 
 
 """
+    neuron_p_vals(
+        deconvolved_activity_1, deconvolved_activity_2, signal, threshold_artifact::Real, threshold_weak::Real, 
+        relative_encoding_strength; compute_p::Bool=true, metric::Function=abs, stat::Function=median
+    )
+
 Computes neuron p-values by comparing differences between two different deconvolved activities to a threshold.
 (Ie: the p-value of rejecting the null hypothesis that the difference is negative or less than the threshold - 
 if p=0, then we can conclude the neuron has the given activity.)
@@ -173,13 +187,13 @@ function neuron_p_vals(deconvolved_activity_1, deconvolved_activity_2, signal, t
         diff_1 = deconvolved_activity_1[:,i,1,1] .- deconvolved_activity_1[:,i,2,1]
         diff_2 = deconvolved_activity_2[:,i,1,1] .- deconvolved_activity_2[:,i,2,1]
         categories[k*"_act"] = compute_p ? prob_P_greater_Q(diff_1 .+ θh_thresh, diff_2) : metric(signal*stat(diff_2 ./ θh_ratio) - signal*stat(diff_1 ./ θh_ratio))
-        categories[k*"_inh"] = compute_p ? 1 - prob_P_greater_Q(diff_1 .- θh_thresh, diff_2) : metric(signal*stat(diff_2 ./ θh_ratio) - signal*stat(diff_1 ./ θh_ratio))
+        categories[k*"_inh"] = compute_p ? 1 - prob_P_greater_Q(diff_1 .- θh_thresh, diff_2) : metric(signal*stat(diff_1 ./ θh_ratio) - signal*stat(diff_2 ./ θh_ratio))
 
         k = (i == 1) ? "rev_P_encoding" : "fwd_P_encoding"
         diff_1 = deconvolved_activity_1[:,i,1,1] .- deconvolved_activity_1[:,i,1,2]
         diff_2 = deconvolved_activity_2[:,i,1,1] .- deconvolved_activity_2[:,i,1,2]
         categories[k*"_act"] = compute_p ? prob_P_greater_Q(diff_1 .+ P_thresh, diff_2) : metric(signal*stat(diff_2 ./ P_ratio) - signal*stat(diff_1 ./ P_ratio))
-        categories[k*"_inh"] = compute_p ? 1 - prob_P_greater_Q(diff_1 .- P_thresh, diff_2) : metric(signal*stat(diff_2 ./ P_ratio) - signal*stat(diff_1 ./ P_ratio))
+        categories[k*"_inh"] = compute_p ? 1 - prob_P_greater_Q(diff_1 .- P_thresh, diff_2) : metric(signal*stat(diff_1 ./ P_ratio) - signal*stat(diff_2 ./ P_ratio))
     end
 
     diff_1 = (deconvolved_activity_1[:,1,1,1] .- deconvolved_activity_1[:,1,2,1]) .- (deconvolved_activity_1[:,4,1,1] .- deconvolved_activity_1[:,4,2,1])
@@ -541,7 +555,7 @@ Categorizes all neurons in all datasets at all time ranges. Returns the neuron c
 and the raw (not multiple-hypothesis corrected) p-values.
 
 # Arguments:
-- `fit_results`: Gen fit results.
+- `fit_results`: CePNEM fit results.
 - `deconvolved_activity`: Dictionary of deconvolved activity values at lattice points.
 - `P_ranges`: Ranges of feeding values
 - `p`: Significant `p`-value.
@@ -573,137 +587,25 @@ function categorize_all_neurons(fit_results, deconvolved_activity, P_ranges, p, 
     return neuron_categorization, neuron_p, neuron_cats
 end
 
-function subcategorize_all_neurons!(fit_results, analysis_dict, datasets)
-    v_keys = ["fwd_slope_pos", "fwd_slope_neg", "rev_slope_pos", "rev_slope_neg", "rect_pos", "rect_neg"]
-    θh_keys = ["fwd_ventral", "fwd_dorsal", "rev_ventral", "rev_dorsal", "rect_ventral", "rect_dorsal"]
-    P_keys = ["fwd_act", "fwd_inh", "rev_act", "rev_inh", "rect_act", "rect_inh"]
+"""
+get_neuron_category(dataset::String, rng::Int, neuron::Int, fit_results::Dict, neuron_categorization::Dict, relative_encoding_strength::Dict)::Tuple{Array{Tuple{String, String}, 1}, Array{Float64, 1}, Float64}
 
-    analysis_dict["v_enc"] = Dict()
-    for k in v_keys
-        analysis_dict["v_enc"][k] = []
-    end
-    analysis_dict["θh_enc"] = Dict()
-    for k in θh_keys
-        analysis_dict["θh_enc"][k] = []
-    end
-    analysis_dict["P_enc"] = Dict()
-    for k in P_keys
-        analysis_dict["P_enc"][k] = []
-    end
-    num_possible_encodings = length(v_keys) + length(θh_keys) + length(P_keys)
-    analysis_dict["joint_encoding"] = zeros(num_possible_encodings, num_possible_encodings)
-    tot = 0
-    analysis_dict["v_enc_matrix"] = zeros(3,3)
-    analysis_dict["θh_enc_matrix"] = zeros(3,3)
-    analysis_dict["P_enc_matrix"] = zeros(3,3)
-    analysis_dict["neuron_subcategorization"] = Dict()
-    subcategories = ["analog_pos", "analog_neg", "fwd_slope_pos_rect_pos", "rev_slope_pos_rect_neg", "fwd_slope_neg_rect_neg", "rev_slope_neg_rect_pos", "fwd_pos_rev_neg", "rev_pos_fwd_neg", "unknown_enc", "nonencoding"]
-    analysis_dict["joint_subencoding"] = zeros(3*length(subcategories), 3*length(subcategories))
+Returns the encoding categories, relative encoding strengths, and time constants for a given neuron in a given dataset and time range.
 
-    # rect fwd inh, rect fwd, unknown
-    # slow, linear fwd, rect rev inh
-    # linear rev, speed, rect rev
-    for dataset in datasets
-        analysis_dict["neuron_subcategorization"][dataset] = Dict()
-        for rng in 1:length(fit_results[dataset]["ranges"])
-            analysis_dict["neuron_subcategorization"][dataset][rng] = Dict()
-            for beh in ["v", "θh", "P"]
-                analysis_dict["neuron_subcategorization"][dataset][rng][beh] = Dict()
-                for cat in subcategories
-                    analysis_dict["neuron_subcategorization"][dataset][rng][beh][cat] = []
-                end
-            end
-                
-            count = 0
-            for neuron in 1:fit_results[dataset]["num_neurons"]
-                encs_all = zeros(Bool, num_possible_encodings)
-                idx=1
-                
-                for (beh, beh_enc, beh_keys, beh_enc_matrix) in [("v", "v_enc", v_keys, "v_enc_matrix"), 
-                            ("θh", "θh_enc", θh_keys, "θh_enc_matrix"), ("P", "P_enc", P_keys, "P_enc_matrix")]
-
-                    encs = zeros(Bool,length(beh_keys))
-                    for (i,k) in enumerate(beh_keys)
-                        if neuron in analysis_dict["neuron_categorization"][dataset][rng][beh][k]
-                            push!(analysis_dict[beh_enc][k], (dataset, neuron))
-                            encs[i] = 1
-                        end
-                    end
-                    
-                    @assert(!(encs[1] && encs[2]))
-                    @assert(!(encs[3] && encs[4]))
-                    @assert(!(encs[5] && encs[6]))
-                    if encs[1] && encs[4] # speed neuron
-                        @assert(encs[5]) # speed neurons must be rectified
-                        analysis_dict[beh_enc_matrix][2,1] += 1
-                        push!(analysis_dict["neuron_subcategorization"][dataset][rng][beh]["fwd_pos_rev_neg"], neuron)
-                    elseif encs[2] && encs[3] # slow neuron
-                        @assert(encs[6]) # slow neurons must be rectified
-                        analysis_dict[beh_enc_matrix][1,2] += 1
-                        push!(analysis_dict["neuron_subcategorization"][dataset][rng][beh]["rev_pos_fwd_neg"], neuron)
-                    elseif encs[1] && encs[5] # forward positively-rectified
-                        analysis_dict[beh_enc_matrix][3,1] += 1
-                        push!(analysis_dict["neuron_subcategorization"][dataset][rng][beh]["fwd_slope_pos_rect_pos"], neuron)
-                    elseif encs[4] && encs[5] # reversal positively-rectified
-                        analysis_dict[beh_enc_matrix][2,3] += 1
-                        push!(analysis_dict["neuron_subcategorization"][dataset][rng][beh]["rev_slope_neg_rect_pos"], neuron)
-                    elseif encs[2] && encs[6] # reversal negatively-rectified
-                        analysis_dict[beh_enc_matrix][3,2] += 1
-                        push!(analysis_dict["neuron_subcategorization"][dataset][rng][beh]["fwd_slope_neg_rect_neg"], neuron)
-                    elseif encs[3] && encs[6] # forward negatively-rectified
-                        analysis_dict[beh_enc_matrix][1,3] += 1
-                        push!(analysis_dict["neuron_subcategorization"][dataset][rng][beh]["rev_slope_pos_rect_neg"], neuron)
-                    elseif encs[2] && encs[4] # linear reversal
-                        analysis_dict[beh_enc_matrix][2,2] += 1
-                        push!(analysis_dict["neuron_subcategorization"][dataset][rng][beh]["analog_neg"], neuron)
-                    elseif encs[1] && encs[3] # linear forward
-                        analysis_dict[beh_enc_matrix][1,1] += 1
-                        push!(analysis_dict["neuron_subcategorization"][dataset][rng][beh]["analog_pos"], neuron)
-                    elseif any(encs[1:6])
-                        push!(analysis_dict["neuron_subcategorization"][dataset][rng][beh]["unknown_enc"], neuron)
-                        analysis_dict[beh_enc_matrix][3,3] += 1
-                        @assert(sum(encs[1:6]) == 1)
-                    else
-                        @assert(sum(encs[1:6]) == 0)
-                        push!(analysis_dict["neuron_subcategorization"][dataset][rng][beh]["nonencoding"], neuron)
-                    end
-                    
-                    encs_all[idx:idx+length(beh_keys)-1] .= encs
-                    idx += length(beh_keys)
-                end
-                
-                for i=1:length(encs_all)
-                    for j=i+1:length(encs_all)
-                        if encs_all[i] && encs_all[j]
-                            analysis_dict["joint_encoding"][i,j] += 1
-                            analysis_dict["joint_encoding"][j,i] += 1
-                        end
-                    end
-                    if encs_all[i]
-                        analysis_dict["joint_encoding"][i,i] += 1
-                    end
-                end
-                
-                for (i, beh1) in enumerate(["v", "θh", "P"])
-                    for (j, cat1) in enumerate(subcategories)
-                        for (x, beh2) in enumerate(["v", "θh", "P"])
-                            for (y, cat2) in enumerate(subcategories)
-                                if neuron in analysis_dict["neuron_subcategorization"][dataset][rng][beh1][cat1] && neuron in analysis_dict["neuron_subcategorization"][dataset][rng][beh2][cat2] 
-                                    analysis_dict["joint_subencoding"][length(subcategories)*(i-1)+j,length(subcategories)*(x-1)+y] += 1
-                                end
-                            end
-                        end
-                    end
-                end
-                        
-                
-                tot += 1
-            end
-        end
-    end
-end
-
-function get_neuron_category(dataset, rng, neuron, fit_results, neuron_categorization, relative_encoding_strength)
+# Arguments:
+- `dataset::String`: The name of the dataset.
+- `rng::Int`: The index of the time range.
+- `neuron::Int`: The index of the neuron.
+- `fit_results::Dict`: The dictionary of CePNEM fit results.
+- `neuron_categorization::Dict`: The dictionary of neuron categorizations.
+- `relative_encoding_strength::Dict`: The dictionary of relative encoding strengths.
+ 
+# Returns:
+- `encoding::Array{Tuple{String, String}, 1}`: An array of tuples representing the encoding categories of the neuron.
+- `relative_enc_str::Array{Float64, 1}`: An array of the relative encoding strengths of the neuron.
+- `τ::Float64`: The time constant of the neuron, in seconds.
+"""
+function get_neuron_category(dataset::String, rng::Int, neuron::Int, fit_results::Dict, neuron_categorization::Dict, relative_encoding_strength::Dict)::Tuple{Array{Tuple{String, String}, 1}, Array{Float64, 1}, Float64}
     encoding = []
     relative_enc_str = []
     for beh in ["v", "θh", "P"]
@@ -720,7 +622,23 @@ function get_neuron_category(dataset, rng, neuron, fit_results, neuron_categoriz
     return encoding, relative_enc_str, τ
 end
 
-function get_enc_stats(fit_results, neuron_p, P_ranges; encoding_changes=nothing, P_diff_thresh=0.5, p=0.05, rngs_valid=nothing)
+"""
+get_enc_stats(fit_results::Dict, neuron_p::Dict, P_ranges::Dict; encoding_changes=nothing, P_diff_thresh::Float64=0.5, p::Float64=0.05, rngs_valid=nothing)
+
+Returns a tuple containing a dictionary containing statistics about the encoding categories of neurons across all datasets and a list of skipped datasets.
+
+# Arguments:
+- `fit_results::Dict`: CePNEM fit results.
+- `neuron_p::Dict`: Dictionary of p-values for neuron categorization.
+- `P_ranges::Dict`: Ranges of feeding values.
+- `P_diff_thresh::Float64` (optional, default `0.5`): Minimum feeding variance in a time range necessary for trying to compute feeding info.
+- `p::Float64` (optional, default `0.05`): Significant `p`-value.
+- `rngs_valid::Any` (optional, default `nothing`): If set, restrict the ranges that are considered for each dataset to this.
+
+# Returns:
+- `result::Dict{String,Dict}`: A dictionary containing statistics about the encoding categories of neurons across all datasets.
+"""
+function get_enc_stats(fit_results::Dict, neuron_p::Dict, P_ranges::Dict; P_diff_thresh::Float64=0.5, p::Float64=0.05, rngs_valid=nothing)
     result = Dict{String,Dict}()
     list_uid_invalid = String[] # no pumping
     for dataset in keys(fit_results)
@@ -750,9 +668,6 @@ function get_enc_stats(fit_results, neuron_p, P_ranges; encoding_changes=nothing
             continue
         end
         for n=1:fit_results[dataset]["num_neurons"]
-            if !isnothing(encoding_changes) && (!(n in keys(encoding_changes)) || !(n in encoding_changes[dataset][(1,2)]["neurons"]))
-                continue
-            end
             max_npred = 0
 
             v_p = adjust([neuron_p[dataset][r]["v"]["all"][n] for r=rngs], BenjaminiHochberg())
@@ -801,8 +716,27 @@ function get_enc_stats(fit_results, neuron_p, P_ranges; encoding_changes=nothing
     result, list_uid_invalid
 end
 
+"""
+    get_enc_stats_pool(fit_results::Dict, neuron_p::Dict, P_ranges::Dict; P_diff_thresh::Float64=0.5, p::Float64=0.05, rngs_valid=nothing)
 
-function get_enc_stats_pool(fit_results, neuron_p, P_ranges; P_diff_thresh=0.5, p=0.05, rngs_valid=nothing)
+This function calculates the encoding statistics for a pool of datasets. It calls the `get_enc_stats` function for each dataset and aggregates the results.
+
+# Arguments
+- `fit_results::Dict`: A dictionary containing the results of fitting CePNEM to the data.
+- `neuron_p::Dict`: A dictionary containing the p-values for neuron categorization.
+- `P_ranges::Dict`: A dictionary containing the ranges of pumping information.
+- `P_diff_thresh::Float64`: The minimum difference in pumping information required to consider a time range valid.
+- `p::Float64`: Significant `p`-value.
+- `rngs_valid::Union{Nothing, Dict}`: A dictionary containing the valid ranges for each dataset. If `nothing`, all ranges are considered valid.
+
+# Returns
+- A tuple containing the following:
+    - `n_neurons_beh::Array{Int,1}`: An array containing the number of neurons that encode each behavior.
+    - `n_neurons_npred::Array{Int,1}`: An array containing the number of neurons that encode each number of behaviors.
+    - `n_neurons_fit_all::Int`: The total number of neurons that encoded any behavior.
+    - `n_neurons_tot_all::Int`: The total number of neurons.
+"""
+function get_enc_stats_pool(fit_results::Dict, neuron_p::Dict, P_ranges::Dict; P_diff_thresh::Float64=0.5, p::Float64=0.05, rngs_valid::Union{Nothing, Dict}=nothing)::Tuple{Array{Int,1}, Array{Int,1}, Int, Int}
     n_neurons_tot_all = 0
     n_neurons_fit_all = 0
     n_neurons_beh = [0,0,0]
@@ -822,96 +756,4 @@ function get_enc_stats_pool(fit_results, neuron_p, P_ranges; P_diff_thresh=0.5, 
     end
     
     n_neurons_beh, n_neurons_npred, n_neurons_fit_all, n_neurons_tot_all
-end
-
-        
-function get_consistent_neurons(datasets, fit_results, neuron_categorization, dict_enc, rngs_use; rngs_valid=[5,6], ewma_skip=200, err_thresh=0.9)
-    consistent_neurons = Dict()
-    inconsistent_neurons = Dict()
-    parameters = Dict()
-    fits = Dict()
-    @assert(length(rngs_valid) == 2)
-    for dataset in datasets
-        consistent_neurons[dataset] = []
-        inconsistent_neurons[dataset] = []
-        parameters[dataset] = Dict()
-        fits[dataset] = Dict()
-        rng = rngs_use[dataset]
-        @assert(rng in rngs_valid)
-        rng_other = [r for r in rngs_valid if r != rng][1]
-        
-        for n in dict_enc[dataset]
-
-            ps_keep = []
-            if (n in neuron_categorization[dataset][rng]["v"]["all"])
-                append!(ps_keep, [1,2,5])
-            end
-            if (n in neuron_categorization[dataset][rng]["θh"]["all"])
-                append!(ps_keep, 3)
-            end
-            if (n in neuron_categorization[dataset][rng]["P"]["all"])
-                append!(ps_keep, 4)
-            end
-            ps_delete = [p for p in 1:5 if !(p in ps_keep)]
-            ps = project_posterior(fit_results[dataset]["sampled_trace_params"][rng, n, :, :], ps_delete)
-            ps[6] = 0
-            parameters[dataset][n] = ps
-            
-            rng_test = fit_results[dataset]["ranges"][rng_other]
-            rng_len = length(fit_results[dataset]["v"])
-            
-            rng_fit = fit_results[dataset]["ranges"][rng]
-            fit = zscore(model_nl8(rng_len, ps[1:8]..., fit_results[dataset]["v"], fit_results[dataset]["θh"], fit_results[dataset]["P"]))
-            
-            fits[dataset][n] = fit
-            err = mean((fit[rng_test] .- fit_results[dataset]["trace_array"][n,rng_test])[ewma_skip+1:end] .^ 2)
-            err_control = mean(fit_results[dataset]["trace_array"][n,rng_test][ewma_skip+1:end].^2)
-            
-            if err > err_thresh * err_control || length(ps_keep) == 0
-                push!(inconsistent_neurons[dataset], n)
-            else
-                push!(consistent_neurons[dataset], n)
-            end
-        end
-    end
-    return consistent_neurons, inconsistent_neurons, parameters, fits
-end
-
-function add_weighted_subencoding_matrix!(fit_results, analysis_dict, datasets; use_relative=true)
-    analysis_dict["weighted_v_enc_matrix_baseline"] = zeros(3,3)
-    analysis_dict["weighted_θh_enc_matrix_baseline"] = zeros(3,3)
-    analysis_dict["weighted_P_enc_matrix_baseline"] = zeros(3,3)
-    for dataset in datasets
-        for rng=1:length(fit_results[dataset]["ranges"])
-            for beh = ["v", "θh", "P"]
-                for neuron in analysis_dict["neuron_subcategorization"][dataset][rng][beh]["analog_pos"]
-                    analysis_dict["weighted_$(beh)_enc_matrix_baseline"][1,1] += use_relative ? median(analysis_dict["relative_encoding_strength"][dataset][rng][neuron][beh]) : 1
-                end
-                for neuron in analysis_dict["neuron_subcategorization"][dataset][rng][beh]["analog_neg"]
-                    analysis_dict["weighted_$(beh)_enc_matrix_baseline"][2,2] += use_relative ? median(analysis_dict["relative_encoding_strength"][dataset][rng][neuron][beh]) : 1
-                end
-                for neuron in analysis_dict["neuron_subcategorization"][dataset][rng][beh]["fwd_pos_rev_neg"]
-                    analysis_dict["weighted_$(beh)_enc_matrix_baseline"][2,1] += use_relative ? median(analysis_dict["relative_encoding_strength"][dataset][rng][neuron][beh]) : 1
-                end
-                for neuron in analysis_dict["neuron_subcategorization"][dataset][rng][beh]["rev_pos_fwd_neg"]
-                    analysis_dict["weighted_$(beh)_enc_matrix_baseline"][1,2] += use_relative ? median(analysis_dict["relative_encoding_strength"][dataset][rng][neuron][beh]) : 1
-                end
-                for neuron in analysis_dict["neuron_subcategorization"][dataset][rng][beh]["rev_pos_fwd_neg"]
-                    analysis_dict["weighted_$(beh)_enc_matrix_baseline"][1,2] += use_relative ? median(analysis_dict["relative_encoding_strength"][dataset][rng][neuron][beh]) : 1
-                end
-                for neuron in analysis_dict["neuron_subcategorization"][dataset][rng][beh]["fwd_slope_pos_rect_pos"]
-                    analysis_dict["weighted_$(beh)_enc_matrix_baseline"][3,1] += use_relative ? median(analysis_dict["relative_encoding_strength"][dataset][rng][neuron][beh]) : 1
-                end
-                for neuron in analysis_dict["neuron_subcategorization"][dataset][rng][beh]["fwd_slope_neg_rect_neg"]
-                    analysis_dict["weighted_$(beh)_enc_matrix_baseline"][3,2] += use_relative ? median(analysis_dict["relative_encoding_strength"][dataset][rng][neuron][beh]) : 1
-                end
-                for neuron in analysis_dict["neuron_subcategorization"][dataset][rng][beh]["rev_slope_pos_rect_neg"]
-                    analysis_dict["weighted_$(beh)_enc_matrix_baseline"][1,3] += use_relative ? median(analysis_dict["relative_encoding_strength"][dataset][rng][neuron][beh]) : 1
-                end
-                for neuron in analysis_dict["neuron_subcategorization"][dataset][rng][beh]["rev_slope_neg_rect_pos"]
-                    analysis_dict["weighted_$(beh)_enc_matrix_baseline"][2,3] += use_relative ? median(analysis_dict["relative_encoding_strength"][dataset][rng][neuron][beh]) : 1
-                end
-            end
-        end
-    end
 end

@@ -14,12 +14,38 @@ function read_pos_feature(h5f::HDF5.File)
     pos_feature, pos_feature_unet
 end
 
+"""
+    read_pos_feature(path_h5::String)
+
+Reads the `pos_feature` dataset from an HDF5 file located at `path_h5`.
+
+# Arguments:
+- `path_h5::String`: Path to the HDF5 file.
+
+# Returns:
+- `pos_feature::Array{Float64,3}`: A 3D array of shape `(3, 3, n)` containing the feature position data.
+    The first row is the nose position, the second row is the metacorpus position, and the third row is the pharynx position.
+    The first column is the `x` position, the second column is the `y` position, and the third column is the confidence.
+- `pos_feature_unet::Array{Float64,3}`: The same as `pos_feature`, but in UNet (downsampled) coordinates.
+"""
 function read_pos_feature(path_h5::String)
     h5open(path_h5, "r") do h5f
         read_pos_feature(h5f)
     end
 end
 
+"""
+    read_stage(path_h5::String)
+
+Reads the `pos_stage` dataset from an HDF5 file located at `path_h5`.
+
+# Arguments:
+- `path_h5::String`: Path to the HDF5 file.
+
+# Returns:
+- `pos_stage::Array{Float64,2}`: A 2D array of shape `(2, n)` containing the stage position data.
+    The first column is the x position, and the second column is the y position.
+"""
 function read_stage(path_h5::String)
     h5open(path_h5, "r") do h5f
         pos_stage = read(h5f, "pos_stage")
@@ -27,7 +53,23 @@ function read_stage(path_h5::String)
     end
 end
 
+"""
+    read_h5(path_h5::String)
 
+Reads the `pos_feature`, `pos_stage`, and `img_nir` datasets from an HDF5 file located at `path_h5`.
+
+# Arguments:
+- `path_h5::String`: Path to the HDF5 file.
+
+# Returns:
+- `img_nir::Array{Float64,3}`: A 3D array of shape `(x, y, n)` containing the NIR image data.
+- `pos_stage::Array{Float64,2}`: A 2D array of shape `(n, 2)` containing the stage position data.
+    The first column is the x position, and the second column is the y position.
+- `pos_feature::Array{Float64,3}`: A 3D array of shape `(3, 3, n)` containing the feature position data.
+    The first row is the nose position, the second row is the metacorpus position, and the third row is the pharynx position.
+    The first column is the `x` position, the second column is the `y` position, and the third column is the confidence.
+- `pos_feature_unet::Array{Float64,3}`: The same as `pos_feature`, but in UNet (downsampled) coordinates.
+"""
 function read_h5(path_h5::String)
     h5open(path_h5, "r") do h5f
         pos_feature, pos_feature_unet = read_pos_feature(h5f)
@@ -39,6 +81,8 @@ function read_h5(path_h5::String)
 end
 
 """
+    recenter_angle(angle; ref=0)
+
 Recenters `angle` to be within `pi` of a reference angle `ref` (optional, default 0)
 """
 function recenter_angle(angle; ref=0)
@@ -46,6 +90,8 @@ function recenter_angle(angle; ref=0)
 end
 
 """
+    local_recenter_angle(angles; delta=10)
+
 Recenters `angles` to be continuous. `delta` (default 10) is the timespan of reference angles.
 """
 function local_recenter_angle(angles; delta=10)
@@ -66,6 +112,8 @@ function local_recenter_angle(angles; delta=10)
 end
 
 """
+    vec_to_angle(vec)
+
 Converts a vector into an angle in the lab `xy`-coordinate space.
 """
 function vec_to_angle(vec)
@@ -73,6 +121,8 @@ function vec_to_angle(vec)
 end
 
 """
+    make_vec(x::Array{<:AbstractFloat,1}, y::Array{<:AbstractFloat,1})
+
 Creates a vector out of `x` and `y` position variables.
 """
 function make_vec(x::Array{<:AbstractFloat,1}, y::Array{<:AbstractFloat,1})
@@ -80,6 +130,8 @@ function make_vec(x::Array{<:AbstractFloat,1}, y::Array{<:AbstractFloat,1})
 end
 
 """
+    get_lsqerr(fit, raw)
+
 Computes least squares error of a fit.
 """
 function get_lsqerr(fit, raw)
@@ -87,6 +139,8 @@ function get_lsqerr(fit, raw)
 end
 
 """
+    savitzky_golay_filter(data, lag; is_derivative::Bool=false, has_inflection::Bool=true, is_angle=false)
+
 Filters data using the Savitzky-Golay algorithm, either for smoothing or differentiating purposes.
 
 # Arguments:

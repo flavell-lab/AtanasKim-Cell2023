@@ -370,6 +370,21 @@ function compute_worm_spline!(param, path_h5, worm_seg_model, worm_thickness, me
     return errors
 end
 
+"""
+    compute_worm_thickness(param, path_h5, worm_seg_model, med_axis_dict, is_omega_dict)
+
+This function computes the thickness of the worm at each point along its length.
+
+Arguments:
+- `param`: A dictionary containing parameters for the function.
+- `path_h5`: The path to the HDF5 file containing the worm images.
+- `worm_seg_model`: The segmentation model used to segment the worm images.
+- `med_axis_dict`: A dictionary containing the medial axis of the worm at each timepoint.
+- `is_omega_dict`: A dictionary indicating whether each timepoint corresponds to an omega turn.
+
+Returns:
+- `dists`: A vector containing the thickness of the worm at each point along its length.
+"""
 function compute_worm_thickness(param, path_h5, worm_seg_model, med_axis_dict, is_omega_dict)
     img_label = zeros(Int32, param["img_label_size"][1], param["img_label_size"][2])
 
@@ -448,6 +463,8 @@ function fit_spline(param, xs, ys, pts_n; n_subsample=15)
 end
 
 """
+    get_segment_end_matrix(param, x_array, y_array)
+
 Computes equally-spaced points along the worm spline.
 
 # Arguments:
