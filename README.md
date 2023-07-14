@@ -1,5 +1,5 @@
 ## Intro
-This repository contains the source codes used in [the article below](/data1/prj_kfc/cell-data).
+This repository contains the source codes used in [the article below](https://github.com/flavell-lab/AtanasKim-Cell2023/tree/main#citation).
 
 ## Citation
 To cite this work (datasets, methods, code, packages, models, results, etc.), please refer to the article: 
