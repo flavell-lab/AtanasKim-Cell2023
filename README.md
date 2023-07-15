@@ -11,7 +11,7 @@ bioRxiv 2022.11.11.516186; doi: https://doi.org/10.1101/2022.11.11.516186
 **\* Equal Contribution**
 
 ## WormWideWeb
-Datasets and modeling results (encoding detection) can be browsed in [WormWideWeb](https://wormwideweb.org/). On the website, you can easily find the neural (GCaMP) traces of specific recorded/identified neuron classes, along with the information on how those neurons encode behavioral information—identified by the CePNEM model.
+The datasets and modeling results (encoding detection) from this project can be browsed in [WormWideWeb](https://wormwideweb.org/). On the website, you can easily find the neural (GCaMP) traces of specific recorded/identified neuron classes, along with the information on how those neurons encode behavioral information—identified by the CePNEM model.
 
 ## Notebooks and scripts
 Notebooks/scripts used in this project are stored in the directory `notebook`.  
@@ -19,6 +19,7 @@ Notebooks/scripts used in this project are stored in the directory `notebook`.
 ## Package directory
 List of packages in this repository (in the directory `src`). Note that the source code included in this repository is from when the article was published. Any updates (e.g. bug fix, new feature) to any of the packages are not reflected on the code included in this repository.  
 **To use/install or access the latest/maintained versions, please access the individual repositories** using the links below: 
+
 ### ANTSUN
 Calcium and behavior data processing and extraction
 
