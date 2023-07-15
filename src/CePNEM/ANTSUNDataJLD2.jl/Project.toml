@@ -1,0 +1,18 @@
+name = "ANTSUNDataJLD2"
+uuid = "18b2d93e-2194-470d-a231-55641c046d35"
+authors = ["Jungsoo Kim <jungsu93@gmail.com>"]
+version = "0.1.0"
+
+[deps]
+FlavellBase = "88015601-1e04-46e4-b006-ffd03bd63f42"
+FlavellConstants = "dcb47d69-08dc-4104-8beb-08f30fc48864"
+HDF5 = "f67ccb44-e63f-5c2f-98bd-6dc0ccc4ba2f"
+Impute = "f7bf1975-0170-51b9-8c5f-a992d46b9575"
+JLD2 = "033835bb-8acc-5ee8-8aae-3f567f8a3819"
+ProgressMeter = "92933f4c-e287-5a05-a399-4b506db050ca"
+PyPlot = "d330b81b-6aea-500a-939a-2ce795aea3ee"
+Statistics = "10745b16-79ce-11e8-11f9-7d13ad32a3b2"
+StatsBase = "2913bbd2-ae8a-5f71-8c99-4fb6c76f3a91"
+BehaviorDataNIR = "3f411c05-961e-46d9-b20c-1ef355bc3583"
+CaAnalysis = "947cb7f0-8959-11e9-3494-21039d60b1bb"
+ANTSUNData = "cee8c2ed-1f8c-46f5-bbc8-43813539d123"
