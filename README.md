@@ -22,14 +22,14 @@ List of packages in this repository (in the directory `src`). Note that the sour
 ### ANTSUN
 Calcium and behavior data processing and extraction
 
- - [ANTSUN_NeuroPAL.ipynb](https://github.com/flavell-lab/ANTSUN) is a notebook that executes the full ANTSUN pipeline, from raw microscope data to neural traces and behaviors
+ - [ANTSUN](https://github.com/flavell-lab/ANTSUN) contains a notebook that executes the full ANTSUN pipeline, from raw microscope data to neural traces and behaviors
  - [BehaviorDataNIR.jl](https://github.com/flavell-lab/BehaviorDataNIR.jl) extracts behavioral data from NIR microscope recordings
  - [CaAnalysis.jl](https://github.com/flavell-lab/CaAnalysis.jl) processes GCaMP traces
  - [Clustering.jl](https://github.com/flavell-lab/Clustering.jl) contains a custom hierarchical clustering algorithm used in neuron identity matching
  - [ExtractRegisteredData.jl](https://github.com/flavell-lab/ExtractRegisteredData.jl) links neural identities between time points and extracting GCaMP traces
- - [FFTRegGPU.jl](https://github.com/flavell-lab/FFTRegGPU.jl) performs shear-correction
+ - [FFTRegGPU.jl](https://github.com/flavell-lab/FFTRegGPU.jl) performs shear-correction in GPU
  - [FlavellBase.jl](https://github.com/flavell-lab/FlavellBase.jl) contains generic code utilities
- - [GPUFilter.jl](https://github.com/flavell-lab/GPUFilter.jl) performs total-variation noise filtering
+ - [GPUFilter.jl](https://github.com/flavell-lab/GPUFilter.jl) library of GPU-accelerated filtering methods
  - [ImageDataIO.jl](https://github.com/flavell-lab/ImageDataIO.jl) contains IO code that allows different ANTSUN packages to communicate with each other
  - [MHDIO.jl](https://github.com/flavell-lab/MHDIO.jl) contains IO code for the MHD image format
  - [ND2Process.jl](https://github.com/flavell-lab/ND2Process.jl) contains IO code for the ND2 image format
@@ -52,10 +52,10 @@ Modeling and analysis tools
  - [AnalysisBase.jl](https://github.com/flavell-lab/AnalysisBase.jl) implements various GCaMP analysis utilities
  - [CePNEM.jl](https://github.com/flavell-lab/CePNEM.jl) contains the mathematical formulation of the CePNEM model
  - [CePNEMAnalysis.jl](https://github.com/flavell-lab/CePNEMAnalysis.jl) and its associated notebooks contain most of the code for interpreting CePNEM model results
- - [EncoderModel.jl](https://github.com/flavell-lab/EncoderModel.jl) implements non-probabilistic (ie: MSE-minimization) versions of CePNEM
+ - [EncoderModel.jl](https://github.com/flavell-lab/EncoderModel.jl) implements non-probabilistic (i.e.: MSE-minimization) versions of CePNEM
  - [FlavellConstants.jl](https://github.com/flavell-lab/FlavellConstants.jl) stores parameter settings and values that are held fixed
  - [HierarchicalPosteriorModel.jl](https://github.com/flavell-lab/HierarchicalPosteriorModel.jl) implements a hierarchical posterior model for interpreting CePNEM fits on the same neuron class across animals
 ### Instrumentation
 Microscope control and data acquisition software (GUI)
- - [ConfocalTrackerControl.jl](https://github.com/flavell-lab/ConfocalTrackerControl.jl) implements an interface for tracking the worm
- - [StageControl.jl](https://github.com/flavell-lab/StageControl.jl) interacts with the stage controller to track the worm
+ - [ConfocalTrackerControl.jl](https://github.com/flavell-lab/ConfocalTrackerControl.jl) worm tracking and data acquisition software (GUI)
+ - [StageControl.jl](https://github.com/flavell-lab/StageControl.jl) interfaces the MAC6000 stage controller
