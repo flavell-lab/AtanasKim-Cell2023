@@ -20,7 +20,11 @@ The datasets and modeling results (encoding detection) from this project can be 
 Notebooks/scripts used in this project are stored in the directory `notebook`.  
 
 ## Package directory
+**Automatic installation**  
+To automatically install the key main packages, please use the latest version of [FlavellPkg.jl](https://github.com/flavell-lab/FlavellPkg.jl)
+
 List of packages in this repository (in the directory `src`). Note that the source code included in this repository is from when the article was published. Any updates (e.g. bug fix, new feature) to any of the packages are not reflected on the code included in this repository.  
+
 **To use/install or access the latest/maintained versions, please access the individual repositories** using the links below: 
 
 ### ANTSUN
