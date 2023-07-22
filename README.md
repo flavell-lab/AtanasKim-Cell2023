@@ -1,4 +1,6 @@
 ## Intro
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.8151918.svg)](https://doi.org/10.5281/zenodo.8151918)
+
 This repository contains the source codes used in [the article below](https://github.com/flavell-lab/AtanasKim-Cell2023/tree/main#citation).
 
 ## Citation
