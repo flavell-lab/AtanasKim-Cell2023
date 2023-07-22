@@ -35,7 +35,7 @@ Calcium and behavior data processing and extraction
  - [CaAnalysis.jl](https://github.com/flavell-lab/CaAnalysis.jl) processes GCaMP traces
  - [Clustering.jl](https://github.com/flavell-lab/Clustering.jl) contains a custom hierarchical clustering algorithm used in neuron identity matching
  - [ExtractRegisteredData.jl](https://github.com/flavell-lab/ExtractRegisteredData.jl) links neural identities between time points and extracting GCaMP traces
- - [FFTRegGPU.jl](https://github.com/flavell-lab/FFTRegGPU.jl) performs shear-correction in GPU
+ - [FFTRegGPU.jl](https://github.com/flavell-lab/FFTRegGPU.jl) runs the FFT-bsased subpixel shift registration in GPU
  - [FlavellBase.jl](https://github.com/flavell-lab/FlavellBase.jl) contains generic code utilities
  - [GPUFilter.jl](https://github.com/flavell-lab/GPUFilter.jl) library of GPU-accelerated filtering methods
  - [ImageDataIO.jl](https://github.com/flavell-lab/ImageDataIO.jl) contains IO code that allows different ANTSUN packages to communicate with each other
