@@ -1,14 +1,17 @@
 ## Intro
 [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.8151918.svg)](https://doi.org/10.5281/zenodo.8151918)
 
-This repository contains the source codes used in [the article below](https://github.com/flavell-lab/AtanasKim-Cell2023/tree/main#citation).
+This repository contains the source code used in [the article below](https://github.com/flavell-lab/AtanasKim-Cell2023/tree/main#citation). It is not being actively maintained; please see individual repositories (linked below) for the latest version of the code.
 
 ## Citation
 To cite this work (datasets, methods, code, packages, models, results, etc.), please refer to the article: 
 
 #### Brain-wide representations of behavior spanning multiple timescales and states in C. elegans
-**Adam A. Atanas\***, **Jungsoo Kim\***, Ziyu Wang, Eric Bueno, McCoy Becker, Di Kang, Jungyeon Park, Cassi Estrem, Talya S. Kramer, Saba Baskoylu, Vikash K. Mansingkha, Steven W. Flavell  
-bioRxiv 2022.11.11.516186; doi: https://doi.org/10.1101/2022.11.11.516186  
+**Adam A. Atanas\***, **Jungsoo Kim\***, Ziyu Wang, Eric Bueno, McCoy Becker, Di Kang, 
+Jungyeon Park, Talya S. Kramer, Flossie K. Wan, Saba Baskoylu, Ugur Dag,  Elpiniki Kalogeropoulou,
+Matthew A. Gomes, Cassi Estrem, Netta Cohen, Vikash K. Mansinghka, Steven W. Flavell
+
+Cell 2023; doi: https://doi.org/10.1016/j.cell.2023.07.035
 
 **\* Equal Contribution**
 
@@ -19,13 +22,13 @@ The processed data files and the trained neural network weights are available in
 The datasets and modeling results (encoding detection) from this project can be browsed in [WormWideWeb](https://wormwideweb.org/). On the website, you can easily find the neural (GCaMP) traces of specific recorded/identified neuron classes, along with the information on how those neurons encode behavioral information—identified by the CePNEM model.
 
 ## Notebooks and scripts
-Notebooks/scripts used in this project are stored in the directory `notebook`.  
+Notebooks and scripts used in this project are stored in the directory `notebook`.  
 
 ## Package directory
 **Automatic installation**  
-To automatically install the key main packages, please use the latest version of [FlavellPkg.jl](https://github.com/flavell-lab/FlavellPkg.jl)
+To automatically install the latest versions of the key main packages, please use the latest version of [FlavellPkg.jl](https://github.com/flavell-lab/FlavellPkg.jl)
 
-List of packages in this repository (in the directory `src`). Note that the source code included in this repository is from when the article was published. Any updates (e.g. bug fix, new feature) to any of the packages are not reflected on the code included in this repository.  
+Packages in this repository are available in the directory `src`. Note that the source code included in this repository is from when the article was published. Any updates (e.g. bug fixes, new features) to any of the packages are not reflected on the code included in this repository.  
 
 **To use/install or access the latest/maintained versions, please access the individual repositories** using the links below: 
 
