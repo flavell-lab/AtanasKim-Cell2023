@@ -24,13 +24,13 @@ The datasets and modeling results (encoding detection) from this project can be 
 ## Notebooks and scripts
 Notebooks and scripts used in this project are stored in the directory `notebook`.  
 
-## Package directory
-**Automatic installation**  
+## Installation 
 To automatically install the latest versions of the key main packages, please use the latest version of [our setup script](https://github.com/flavell-lab/flv-c-setup). This script should install all necessary dependencies, including Julia and Python packages, for our code to run. We also provide [FlavellPkg.jl](https://github.com/flavell-lab/FlavellPkg.jl) which only handles the Julia packages, so it is recommended to run the full installation script in order to ensure the Python packages are installed correctly as well.
 
+## Package directory
 Packages in this repository are available in the directory `src`. Note that the source code included in this repository is from when the article was published. Any updates (e.g. bug fixes, new features) to any of the packages are not reflected on the code included in this repository.  
 
-**To use/install or access the latest/maintained versions, please access the individual repositories** using the links below: 
+**To use/install or access the latest/maintained versions, please access the individual repositories** using the links below, or alternatively use our setup scripts linked above: 
 
 ### ANTSUN
 Calcium and behavior data processing and extraction
