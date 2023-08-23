@@ -26,7 +26,7 @@ Notebooks and scripts used in this project are stored in the directory `notebook
 
 ## Package directory
 **Automatic installation**  
-To automatically install the latest versions of the key main packages, please use the latest version of [FlavellPkg.jl](https://github.com/flavell-lab/FlavellPkg.jl)
+To automatically install the latest versions of the key main packages, please use the latest version of [our setup script](https://github.com/flavell-lab/flv-c-setup). This script should install all necessary dependencies, including Julia and Python packages, for our code to run. We also provide [FlavellPkg.jl](https://github.com/flavell-lab/FlavellPkg.jl) which only handles the Julia packages, so it is recommended to run the full installation script in order to ensure the Python packages are installed correctly as well.
 
 Packages in this repository are available in the directory `src`. Note that the source code included in this repository is from when the article was published. Any updates (e.g. bug fixes, new features) to any of the packages are not reflected on the code included in this repository.  
 
