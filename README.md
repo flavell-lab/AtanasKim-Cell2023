@@ -68,6 +68,7 @@ Modeling and analysis tools
  - [EncoderModel.jl](https://github.com/flavell-lab/EncoderModel.jl) implements non-probabilistic (i.e.: MSE-minimization) versions of CePNEM
  - [FlavellConstants.jl](https://github.com/flavell-lab/FlavellConstants.jl) stores parameter settings and values that are held fixed
  - [HierarchicalPosteriorModel.jl](https://github.com/flavell-lab/HierarchicalPosteriorModel.jl) implements a hierarchical posterior model for interpreting CePNEM fits on the same neuron class across animals
+ - [ConnectomePlot.jl](https://github.com/flavell-lab/ConnectomePlot.jl) is a package for creating diagrams of the *C. elegans* connectome with custom color settings for each neuron.
 ### Instrumentation
 Microscope control and data acquisition software (GUI)
  - [ConfocalTrackerControl.jl](https://github.com/flavell-lab/ConfocalTrackerControl.jl) worm tracking and data acquisition software (GUI)
