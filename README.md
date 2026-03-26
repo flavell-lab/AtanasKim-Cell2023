@@ -1,3 +1,5 @@
+<img src="MIT%20Flavell%20lab%20logo.png" width="300">
+
 ## Intro
 [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.8151918.svg)](https://doi.org/10.5281/zenodo.8151918)
 
